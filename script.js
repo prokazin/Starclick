@@ -41,6 +41,10 @@ function initFaction(faction) {
   elements.factionLogo.src = `https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/${faction}.png`;
   elements.factionName.textContent = getFactionName(faction);
   localStorage.setItem('swFaction', faction);
+  
+  // Мгновенный переход к игре
+  elements.factionScreen.classList.add('hidden');
+  elements.gameContainer.classList.remove('hidden');
 }
 
 function getFactionName(faction) {
@@ -52,7 +56,7 @@ function getFactionName(faction) {
   return names[faction] || '';
 }
 
-// Логика доходов
+// Расчет доходов
 function calculateClickIncome() {
   let income = 1;
   income += game.ships * 0.5;
@@ -72,7 +76,7 @@ function calculatePassiveIncome() {
   return income;
 }
 
-// Цены с учетом бонусов
+// Расчет цен с учетом бонусов
 function getPrices() {
   const prices = {
     droid: 10,
@@ -105,8 +109,8 @@ function updateGame() {
   elements.buyJedi.disabled = game.credits < prices.jedi;
   elements.buyDeathStar.disabled = game.credits < prices.deathStar;
 
-  elements.buyDroid.querySelector('.price').textContent = prices.droid;
-  elements.buyShip.querySelector('.price').textContent = prices.ship;
+  elements.buyDroid.querySelector('.price').textContent = Math.floor(prices.droid);
+  elements.buyShip.querySelector('.price').textContent = Math.floor(prices.ship);
   elements.buyJedi.querySelector('.price').textContent = Math.floor(prices.jedi);
   elements.buyDeathStar.querySelector('.price').textContent = Math.floor(prices.deathStar);
 }
@@ -133,7 +137,11 @@ function loadGame() {
     game.ships = data.ships || 0;
     game.jedi = data.jedi || 0;
     game.deathStars = data.deathStars || 0;
-    if (data.faction) initFaction(data.faction);
+    game.faction = data.faction || null;
+    
+    if (game.faction) {
+      initFaction(game.faction);
+    }
     updateGame();
   }
 }
@@ -143,10 +151,10 @@ function createClickEffect(x, y, amount) {
   const effect = document.createElement('div');
   effect.className = 'click-effect';
   effect.textContent = `+${amount.toFixed(1)}`;
-  effect.style.left = `${x + (Math.random() * 100 - 50)}px`;
-  effect.style.top = `${y + (Math.random() * 100 - 50)}px`;
+  effect.style.left = `${x + (Math.random() * 80 - 40)}px`;
+  effect.style.top = `${y + (Math.random() * 80 - 40)}px`;
   document.querySelector('.main-content').appendChild(effect);
-  setTimeout(() => effect.remove(), 1200);
+  setTimeout(() => effect.remove(), 1000);
 }
 
 // Обработчики выбора фракции
@@ -154,8 +162,6 @@ document.querySelectorAll('.select-faction').forEach(button => {
   button.addEventListener('click', (e) => {
     const faction = e.target.closest('.faction').dataset.faction;
     initFaction(faction);
-    elements.factionScreen.classList.add('hidden');
-    elements.gameContainer.classList.remove('hidden');
   });
 });
 
@@ -174,7 +180,7 @@ elements.clickButton.addEventListener('click', (e) => {
   sword.style.transform = 'scaleY(0.95)';
   setTimeout(() => sword.style.transform = 'scaleY(1)', 100);
   
-  // 3 эффекта клика
+  // Эффекты кликов
   for (let i = 0; i < 3; i++) {
     setTimeout(() => {
       createClickEffect(x, y, calculateClickIncome() / 3);
@@ -244,13 +250,15 @@ setInterval(() => {
   }
 }, 1000);
 
-// Загрузка при старте
+// Инициализация игры
 window.addEventListener('DOMContentLoaded', () => {
-  const savedFaction = localStorage.getItem('swFaction');
-  if (savedFaction) {
-    initFaction(savedFaction);
-    elements.factionScreen.classList.add('hidden');
-    elements.gameContainer.classList.remove('hidden');
+  // Центрируем скролл на Империи при загрузке
+  const container = document.querySelector('.factions-container');
+  const empire = document.querySelector('.faction[data-faction="empire"]');
+  if (container && empire) {
+    container.scrollLeft = empire.offsetLeft - (container.offsetWidth / 2) + (empire.offsetWidth / 2);
   }
+  
+  // Загружаем сохраненную игру
   loadGame();
 });
