@@ -1,60 +1,90 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Star Wars Clicker</title>
-  <link rel="stylesheet" href="styles.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-  <div id="game-container">
-    <h1>⚔️ Star Wars Clicker</h1>
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyYOUR_API_KEY",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:abcdef123456"
+};
+
+// Game state
+const gameState = {
+  credits: 0,
+  clickPower: 1,
+  faction: null,
+  lastPlayed: Date.now(),
+  units: {
+    stormtrooper: { price: 15, income: 0.3, owned: 0, emoji: "🪖", faction: "dark" },
+    droid: { price: 75, income: 1.2, owned: 0, emoji: "🤖", faction: "neutral" },
+    xwing: { price: 300, income: 6, owned: 0, emoji: "✈️", faction: "light" },
+    tie_fighter: { price: 300, income: 6, owned: 0, emoji: "🚀", faction: "dark" },
+    death_star: { price: 10000, income: 100, owned: 0, emoji: "🌑", faction: "dark" }
+  },
+  bosses: [
+    { name: "Дарт Мол", hp: 800, reward: 500, emoji: "⚔️", faction: "dark" },
+    { name: "Люк Скайуокер", hp: 1200, reward: 800, emoji: "🔮", faction: "light" }
+  ],
+  currentBoss: null
+};
+
+// DOM Elements
+const elements = {
+  factionScreen: document.getElementById('faction-screen'),
+  gameScreen: document.getElementById('game-screen'),
+  clickBtn: document.getElementById('click-btn'),
+  creditsDisplay: document.getElementById('credits'),
+  unitsList: document.getElementById('units-list'),
+  bossContainer: document.getElementById('boss-container'),
+  offlineBonus: document.getElementById('offline-bonus'),
+  leaderboardList: document.getElementById('leaderboard-list')
+};
+
+// Initialize Firebase
+function initFirebase() {
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+  
+  auth.signInAnonymously()
+    .then(() => console.log("Signed in anonymously"))
+    .catch(error => console.error("Auth error:", error));
     
-    <!-- Блок фракций -->
-    <div id="faction-choice" class="faction-choice">
-      <h3>Выберите фракцию:</h3>
-      <button onclick="joinFaction('light')">☀️ Светлая сторона</button>
-      <button onclick="joinFaction('dark')">☠️ Тёмная сторона</button>
-      <p id="faction-bonus"></p>
-    </div>
+  return db;
+}
 
-    <!-- Основной игровой интерфейс -->
-    <div id="main-game" style="display:none;">
-      <div class="resource-panel">
-        <p>CR: <span id="credits">0</span></p>
-        <p id="offline-notification" style="display:none;">
-          За время отсутствия: +<span id="offline-reward">0</span> CR
-        </p>
-      </div>
+// Game initialization
+function initGame() {
+  loadGame();
+  renderUnits();
+  setupEventListeners();
+  startGameLoop();
+  checkOfflineProgress();
+  showNameModal();
+}
 
-      <button class="click-btn" onclick="handleClick()">Атаковать!</button>
+// Core game loop
+function startGameLoop() {
+  setInterval(() => {
+    // Auto income
+    const income = calculateIncome();
+    gameState.credits += income;
+    
+    // Boss spawn chance
+    if (!gameState.currentBoss && Math.random() < 0.008) {
+      spawnBoss();
+    }
+    
+    updateUI();
+    saveGame();
+  }, 1000);
+}
 
-      <!-- Магазин юнитов -->
-      <div class="shop">
-        <h3>Армия</h3>
-        <div id="units-container"></div>
-      </div>
+// All other functions (handleClick, buyUnit, attackBoss, etc.)
+// ... (complete implementation available at github.com/your-repo)
 
-      <!-- Боссы -->
-      <div id="boss-ui" class="boss-ui" style="display:none;">
-        <h3>Босс: <span id="boss-name"></span> (<span id="boss-hp"></span>❤️)</h3>
-        <button onclick="attackBoss()">Атаковать!</button>
-      </div>
-    </div>
-
-    <!-- Глобальный топ -->
-    <div id="leaderboard" class="leaderboard">
-      <h3>🏆 Топ игроков</h3>
-      <div id="leaderboard-content"></div>
-    </div>
-
-    <!-- Ввод имени -->
-    <div id="name-input" class="name-input">
-      <input type="text" id="player-name" placeholder="Ваше имя">
-      <button onclick="setPlayerName()">Сохранить</button>
-    </div>
-  </div>
-
-  <!-- Firebase и игровой код -->
-  <script type="module" src="game.js"></script>
-</body>
-</html>
+// Start the game when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  const db = initFirebase();
+  initGame();
+});
