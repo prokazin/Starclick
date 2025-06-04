@@ -66,18 +66,10 @@ function createClickEffect(x, y, amount) {
   const effect = document.createElement('div');
   effect.className = 'click-effect';
   effect.textContent = `+${amount.toFixed(1)}`;
-  effect.style.left = `${x}px`;
-  effect.style.top = `${y}px`;
-  
-  // Случайное смещение
-  const offsetX = (Math.random() - 0.5) * 40;
-  effect.style.setProperty('--offset-x', `${offsetX}px`);
-  
+  effect.style.left = `${x + (Math.random() * 120 - 60)}px`;
+  effect.style.top = `${y + (Math.random() * 120 - 60)}px`;
   document.querySelector('.main-content').appendChild(effect);
-  
-  setTimeout(() => {
-    effect.remove();
-  }, 1000);
+  setTimeout(() => effect.remove(), 1200);
 }
 
 // Клик по мечу
@@ -93,19 +85,13 @@ elements.clickButton.addEventListener('click', (e) => {
   // Анимация меча
   const sword = document.querySelector('.sword-blade');
   sword.style.transform = 'scaleY(0.95)';
-  setTimeout(() => {
-    sword.style.transform = 'scaleY(1)';
-  }, 100);
+  setTimeout(() => sword.style.transform = 'scaleY(1)', 100);
   
   // 3 эффекта клика
   for (let i = 0; i < 3; i++) {
     setTimeout(() => {
-      createClickEffect(
-        x + (Math.random() * 60 - 30),
-        y + (Math.random() * 60 - 30),
-        game.perClick / 3
-      );
-    }, i * 100);
+      createClickEffect(x, y, game.perClick / 3);
+    }, i * 150);
   }
 });
 
