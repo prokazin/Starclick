@@ -85,3 +85,36 @@ header h1 {
     padding: 12px 24px;
   }
 }
+
+/* Адаптивный игровой интерфейс */
+.clicker-btn {
+  background: url('../assets/images/buttons/attack.png') no-repeat center;
+  width: 200px;
+  height: 200px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+@media (max-width: 600px) {
+  .clicker-btn {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+/* Анимация клика */
+.clicker-btn:active {
+  transform: scale(0.95);
+}
+
+/* Стили фракций */
+.faction-light {
+  background-color: rgba(0, 100, 255, 0.1);
+  border: 2px solid #00a2ff;
+}
+
+.faction-dark {
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 2px solid #ff0000;
+}
