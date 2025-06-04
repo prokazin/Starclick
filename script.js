@@ -70,7 +70,7 @@ function createClickEffect(x, y, amount) {
   effect.style.top = `${y}px`;
   
   // Случайное смещение
-  const offsetX = (Math.random() - 0.5) * 50;
+  const offsetX = (Math.random() - 0.5) * 40;
   effect.style.setProperty('--offset-x', `${offsetX}px`);
   
   document.querySelector('.main-content').appendChild(effect);
@@ -90,11 +90,23 @@ elements.clickButton.addEventListener('click', (e) => {
   updateGame();
   saveGame();
   
-  createClickEffect(
-    e.clientX - rect.left + (Math.random() * 40 - 20),
-    e.clientY - rect.top + (Math.random() * 40 - 20),
-    game.perClick
-  );
+  // Анимация меча
+  const sword = document.querySelector('.sword-blade');
+  sword.style.transform = 'scaleY(0.95)';
+  setTimeout(() => {
+    sword.style.transform = 'scaleY(1)';
+  }, 100);
+  
+  // 3 эффекта клика
+  for (let i = 0; i < 3; i++) {
+    setTimeout(() => {
+      createClickEffect(
+        x + (Math.random() * 60 - 30),
+        y + (Math.random() * 60 - 30),
+        game.perClick / 3
+      );
+    }, i * 100);
+  }
 });
 
 // Покупки
