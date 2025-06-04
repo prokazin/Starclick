@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background: #000 url('https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/backgrounds.png') no-repeat center;) no-repeat center;
+  background: #000 url('backgrounds.png') no-repeat center;
   background-size: cover;
   color: #FFE81F;
   text-align: center;
@@ -10,7 +10,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  touch-action: manipulation; /* Отключает масштабирование на мобильных */
+  touch-action: manipulation;
 }
 
 .container {
@@ -56,18 +56,40 @@ h1 {
   filter: drop-shadow(0 0 5px #FFE81F);
 }
 
-.upgrades {
+.tabs {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+  margin: 15px 0;
 }
 
-.upgrade-button {
+.tab-button {
+  flex: 1;
   background: #2A2A2A;
   color: #FFE81F;
   border: 1px solid #FFE81F;
   padding: 10px;
+  cursor: pointer;
+}
+
+.tab-button.active {
+  background: #FFE81F;
+  color: #000;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.upgrade-button {
+  width: 100%;
+  background: #2A2A2A;
+  color: #FFE81F;
+  border: 1px solid #FFE81F;
+  padding: 10px;
+  margin: 5px 0;
   border-radius: 5px;
   cursor: pointer;
 }
