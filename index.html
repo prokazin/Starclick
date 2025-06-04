@@ -3,39 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Звёздные Войны: Кликер</title>
+  <title>Star Wars Clicker</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div class="container">
-    <h1>🌌 Галактическая Экономика</h1>
-    
-    <div class="stats">
-      <p>Кредиты: <span id="credits">0</span> 💰</p>
-      <p>Дроиды: <span id="droids">0</span> 🤖</p>
-      <p>Корабли: <span id="ships">0</span> 🚀</p>
+    <div class="header">
+      <div class="resources">
+        <div class="resource" title="Кредиты">
+          <i class="fas fa-coins"></i>
+          <span id="credits">0</span>
+        </div>
+        <div class="resource" title="Дроиды">
+          <i class="fas fa-robot"></i>
+          <span id="droids">0</span>
+        </div>
+        <div class="resource" title="Корабли">
+          <i class="fas fa-space-shuttle"></i>
+          <span id="ships">0</span>
+        </div>
+      </div>
     </div>
 
-    <button id="clickButton" class="click-button">
-      <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/sword.png" alt="Меч" class="sword-icon">
-    </button>
+    <div class="main-content">
+      <button id="clickButton" class="click-button">
+        <img src="sword.png" alt="Меч" class="sword-icon">
+        <div class="sword-glow"></div>
+      </button>
+    </div>
 
     <div class="tabs">
-      <button class="tab-button active" data-tab="upgrades">Улучшения</button>
-      <button class="tab-button" data-tab="shop">Магазин</button>
+      <button class="tab-button active" data-tab="upgrades">
+        <i class="fas fa-cog"></i>
+      </button>
+      <button class="tab-button" data-tab="shop">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
     </div>
 
     <div id="upgrades" class="tab-content active">
-      <button id="buyDroid" class="upgrade-button">Купить дроида (10💰)</button>
-      <button id="buyShip" class="upgrade-button">Купить корабль (50💰)</button>
+      <div class="upgrade-item">
+        <button id="buyDroid" class="upgrade-button">
+          <i class="fas fa-robot"></i>
+          <span class="price">10</span>
+          <span class="count" id="droidCount">0</span>
+        </button>
+      </div>
+      <div class="upgrade-item">
+        <button id="buyShip" class="upgrade-button">
+          <i class="fas fa-space-shuttle"></i>
+          <span class="price">50</span>
+          <span class="count" id="shipCount">0</span>
+        </button>
+      </div>
     </div>
 
     <div id="shop" class="tab-content">
-      <button id="buyJedi" class="upgrade-button">Нанять джедая (100💰)</button>
-      <button id="buyDeathStar" class="upgrade-button">Построить Звезду Смерти (1000💰)</button>
+      <div class="upgrade-item">
+        <button id="buyJedi" class="upgrade-button">
+          <i class="fas fa-jedi"></i>
+          <span class="price">100</span>
+          <span class="count" id="jediCount">0</span>
+        </button>
+      </div>
+      <div class="upgrade-item">
+        <button id="buyDeathStar" class="upgrade-button">
+          <i class="fas fa-moon"></i>
+          <span class="price">1000</span>
+          <span class="count" id="deathStarCount">0</span>
+        </button>
+      </div>
     </div>
-
-    <button id="closeButton" class="close-button">Закрыть</button>
   </div>
 
   <script src="script.js"></script>
