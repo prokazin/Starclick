@@ -4,11 +4,47 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Star Wars Clicker</title>
-  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
+  <!-- Экран выбора фракции -->
+  <div id="faction-select" class="faction-screen">
+    <h1>Выберите фракцию</h1>
+    <div class="factions">
+      <div class="faction" data-faction="republic">
+        <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/republic.png" alt="Республика">
+        <h2>Галактическая Республика</h2>
+        <p><i class="fas fa-robot"></i> +20% доход от дроидов</p>
+        <p><i class="fas fa-jedi"></i> Джедаи дешевле на 15%</p>
+        <button class="select-faction">Выбрать</button>
+      </div>
+      
+      <div class="faction" data-faction="empire">
+        <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/empire.png" alt="Империя">
+        <h2>Галактическая Империя</h2>
+        <p><i class="fas fa-hand-fist"></i> +25% доход за клики</p>
+        <p><i class="fas fa-moon"></i> Звезды Смерти дешевле</p>
+        <button class="select-faction">Выбрать</button>
+      </div>
+      
+      <div class="faction" data-faction="hutt">
+        <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/hutt.png" alt="Картель Хаттов">
+        <h2>Картель Хаттов</h2>
+        <p><i class="fas fa-coins"></i> +30% к базовому доходу</p>
+        <p><i class="fas fa-ship"></i> Корабли дешевле на 20%</p>
+        <button class="select-faction">Выбрать</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Основной игровой интерфейс -->
+  <div id="game-container" class="container hidden">
+    <div class="faction-banner">
+      <img id="faction-logo" src="" alt="Фракция">
+      <span id="faction-name"></span>
+    </div>
+    
     <div class="header">
       <div class="resources">
         <div class="resource" title="Кредиты">
@@ -28,7 +64,7 @@
 
     <div class="main-content">
       <button id="clickButton" class="click-button">
-        <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/sword.png" alt="Световой меч" class="sword-blade">
+        <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/sword.png" alt="Меч" class="sword-blade">
         <div class="sword-glow"></div>
       </button>
     </div>
