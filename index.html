@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Star Wars Clicker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://wallpapercave.com/wp/wp4056410.jpg') no-repeat center fixed;
+      background-size: cover;
+      color: yellow;
+      text-align: center;
+    }
+    button {
+      background: #000;
+      color: yellow;
+      border: 2px solid yellow;
+      padding: 10px 20px;
+      font-size: 20px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    #game {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <h1>⚔️ Star Wars Clicker</h1>
+    <p>CR: <span id="credits">0</span></p>
+    <button onclick="click()">Атаковать!</button>
+    <h3>Армия</h3>
+    <button onclick="buyUnit('stormtrooper')">Штурмовик (10 CR)</button>
+    <p id="stormtrooper-count">Куплено: 0</p>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
