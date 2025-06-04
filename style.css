@@ -14,7 +14,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Arial', sans-serif;
-  background: var(--dark) url('background.jpg') no-repeat center;
+  background: var(--dark) url('https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/backgrounds.png') no-repeat center;
   background-size: cover;
   color: var(--yellow);
   height: 100vh;
