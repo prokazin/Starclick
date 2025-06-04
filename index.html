@@ -1,30 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Star Wars Clicker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Звёздные Войны: Кликер</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>🌌 Galactic Economy</h1>
+    <h1>🌌 Галактическая Экономика</h1>
     
     <div class="stats">
-      <p>Credits: <span id="credits">0</span> 💰</p>
-      <p>Droids: <span id="droids">0</span> 🤖</p>
-      <p>Ships: <span id="ships">0</span> 🚀</p>
+      <p>Кредиты: <span id="credits">0</span> 💰</p>
+      <p>Дроиды: <span id="droids">0</span> 🤖</p>
+      <p>Корабли: <span id="ships">0</span> 🚀</p>
     </div>
 
-    <button id="clickButton" class="click-button">Smuggle Goods</button>
+    <button id="clickButton" class="click-button">
+      <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" alt="Меч" class="sword-icon">
+    </button>
 
     <div class="upgrades">
-      <button id="buyDroid" class="upgrade-button">Buy Droid (10💰)</button>
-      <button id="buyShip" class="upgrade-button">Buy Ship (50💰)</button>
+      <button id="buyDroid" class="upgrade-button">Купить дроида (10💰)</button>
+      <button id="buyShip" class="upgrade-button">Купить корабль (50💰)</button>
     </div>
 
-    <!-- Для Telegram WebApp -->
-    <button id="closeButton" class="close-button">Close</button>
+    <button id="closeButton" class="close-button">Закрыть</button>
   </div>
 
   <script src="script.js"></script>
