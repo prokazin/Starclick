@@ -28,6 +28,22 @@ const gameState = {
   currentBoss: null
 };
 
+function calculateOfflineProgress() {
+  if (!GameState.lastPlayed) return;
+  
+  const secondsPassed = Math.floor((Date.now() - GameState.lastPlayed) / 1000);
+  if (secondsPassed > 10) { // Минимум 10 сек
+    const incomePerSecond = Object.values(GameState.units)
+      .reduce((sum, unit) => sum + (unit.income * unit.owned), 0);
+    
+    const offlineCredits = Math.floor(secondsPassed * incomePerSecond);
+    if (offlineCredits > 0) {
+      GameState.credits += offlineCredits;
+      showOfflineBonus(offlineCredits);
+    }
+  }
+}
+
 // DOM Elements
 const elements = {
   factionScreen: document.getElementById('faction-screen'),
