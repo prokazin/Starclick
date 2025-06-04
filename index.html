@@ -1,42 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Star Wars Clicker</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: url('https://wallpapercave.com/wp/wp4056410.jpg') no-repeat center fixed;
-      background-size: cover;
-      color: yellow;
-      text-align: center;
-    }
-    button {
-      background: #000;
-      color: yellow;
-      border: 2px solid yellow;
-      padding: 10px 20px;
-      font-size: 20px;
-      cursor: pointer;
-      margin: 10px;
-    }
-    #game {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="game">
-    <h1>⚔️ Star Wars Clicker</h1>
-    <p>CR: <span id="credits">0</span></p>
-    <button onclick="click()">Атаковать!</button>
-    <h3>Армия</h3>
-    <button onclick="buyUnit('stormtrooper')">Штурмовик (10 CR)</button>
-    <p id="stormtrooper-count">Куплено: 0</p>
+  <div class="game-container">
+    <header>
+      <h1><span class="icon">⚔️</span> Star Wars Clicker</h1>
+    </header>
+
+    <div id="faction-screen" class="screen">
+      <h2>Выберите свою фракцию</h2>
+      <div class="factions">
+        <button id="light-side" class="faction-btn">
+          <img src="assets/light-side.jpg" alt="Светлая сторона">
+          <span>☀️ Светлая сторона</span>
+          <p>+ Автоклик каждые 5 сек</p>
+        </button>
+        <button id="dark-side" class="faction-btn">
+          <img src="assets/dark-side.jpg" alt="Тёмная сторона">
+          <span>☠️ Тёмная сторона</span>
+          <p>+ 2x сила клика</p>
+        </button>
+      </div>
+    </div>
+
+    <div id="game-screen" class="screen hidden">
+      <div class="stats">
+        <div class="credits-display">
+          <span>CR:</span>
+          <span id="credits">0</span>
+        </div>
+        <div id="faction-indicator"></div>
+      </div>
+
+      <button id="click-btn" class="clicker-btn">АТАКОВАТЬ!</button>
+
+      <div id="offline-bonus" class="notification hidden">
+        За время отсутствия: +<span id="offline-credits">0</span> CR
+      </div>
+
+      <div class="shop">
+        <h3>⚙️ Армейский арсенал</h3>
+        <div id="units-list" class="units-grid"></div>
+      </div>
+
+      <div id="boss-container" class="boss-container hidden">
+        <h3>🚨 Появился босс!</h3>
+        <div class="boss-info">
+          <span id="boss-emoji"></span>
+          <span id="boss-name"></span>
+          <span id="boss-hp"></span>
+        </div>
+        <button id="attack-boss-btn" class="boss-btn">Атаковать</button>
+      </div>
+    </div>
+
+    <div class="leaderboard">
+      <h3>🏆 Галактический топ</h3>
+      <div id="leaderboard-list"></div>
+    </div>
+
+    <div id="name-modal" class="modal">
+      <div class="modal-content">
+        <h3>Введите имя</h3>
+        <input type="text" id="player-name" placeholder="Имя командира">
+        <button id="save-name-btn">Сохранить</button>
+      </div>
+    </div>
   </div>
-  <script src="game.js"></script>
+
+  <script type="module" src="game.js"></script>
 </body>
 </html>
