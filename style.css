@@ -4,12 +4,13 @@ body {
   font-family: Arial, sans-serif;
   background: #000 url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center;
   background-size: cover;
-  color: #FFE81F; /* Star Wars yellow */
+  color: #FFE81F;
   text-align: center;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  touch-action: manipulation; /* Отключает масштабирование на мобильных */
 }
 
 .container {
@@ -37,12 +38,9 @@ h1 {
 }
 
 .click-button {
-  background: #FFE81F;
-  color: #000;
+  background: transparent;
   border: none;
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  border-radius: 5px;
+  padding: 0;
   cursor: pointer;
   margin: 10px 0;
   transition: transform 0.1s;
@@ -52,10 +50,16 @@ h1 {
   transform: scale(0.95);
 }
 
+.sword-icon {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 0 5px #FFE81F);
+}
+
 .upgrades {
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  justify-content: center;
   margin-top: 20px;
 }
 
@@ -63,7 +67,7 @@ h1 {
   background: #2A2A2A;
   color: #FFE81F;
   border: 1px solid #FFE81F;
-  padding: 10px 15px;
+  padding: 10px;
   border-radius: 5px;
   cursor: pointer;
 }
@@ -80,5 +84,5 @@ h1 {
   border: 1px solid #FFE81F;
   padding: 10px 20px;
   border-radius: 5px;
-  display: none; /* По умолчанию скрыт */
+  display: none;
 }
