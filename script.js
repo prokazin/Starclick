@@ -1,132 +1,145 @@
 // Состояние игры
-let gameState = {
+const game = {
   credits: 0,
   droids: 0,
   ships: 0,
   jedi: 0,
-  deathStars: 0
+  deathStars: 0,
+  perClick: 1,
+  perSecond: 0
 };
 
 // Элементы DOM
-const creditsEl = document.getElementById('credits');
-const droidsEl = document.getElementById('droids');
-const shipsEl = document.getElementById('ships');
-const clickButton = document.getElementById('clickButton');
-const buyDroidButton = document.getElementById('buyDroid');
-const buyShipButton = document.getElementById('buyShip');
-const buyJediButton = document.getElementById('buyJedi');
-const buyDeathStarButton = document.getElementById('buyDeathStar');
-const closeButton = document.getElementById('closeButton');
-const tabButtons = document.querySelectorAll('.tab-button');
-const tabContents = document.querySelectorAll('.tab-content');
+const elements = {
+  credits: document.getElementById('credits'),
+  droids: document.getElementById('droids'),
+  ships: document.getElementById('ships'),
+  droidCount: document.getElementById('droidCount'),
+  shipCount: document.getElementById('shipCount'),
+  jediCount: document.getElementById('jediCount'),
+  deathStarCount: document.getElementById('deathStarCount'),
+  clickButton: document.getElementById('clickButton'),
+  buyDroid: document.getElementById('buyDroid'),
+  buyShip: document.getElementById('buyShip'),
+  buyJedi: document.getElementById('buyJedi'),
+  buyDeathStar: document.getElementById('buyDeathStar'),
+  tabButtons: document.querySelectorAll('.tab-button'),
+  tabContents: document.querySelectorAll('.tab-content')
+};
 
-// Загрузка сохранения
+// Загрузка игры
 function loadGame() {
   const saved = localStorage.getItem('starWarsClicker');
   if (saved) {
-    gameState = JSON.parse(saved);
-    updateUI();
+    const data = JSON.parse(saved);
+    Object.assign(game, data);
+    updateGame();
   }
 }
 
 // Сохранение игры
 function saveGame() {
-  localStorage.setItem('starWarsClicker', JSON.stringify(gameState));
+  localStorage.setItem('starWarsClicker', JSON.stringify(game));
 }
 
 // Обновление интерфейса
-function updateUI() {
-  creditsEl.textContent = gameState.credits.toFixed(1);
-  droidsEl.textContent = gameState.droids;
-  shipsEl.textContent = gameState.ships;
-  
-  buyDroidButton.disabled = gameState.credits < 10;
-  buyShipButton.disabled = gameState.credits < 50;
-  buyJediButton.disabled = gameState.credits < 100;
-  buyDeathStarButton.disabled = gameState.credits < 1000;
-  
-  buyDroidButton.textContent = `Купить дроида (10💰) (${gameState.droids})`;
-  buyShipButton.textContent = `Купить корабль (50💰) (${gameState.ships})`;
-  buyJediButton.textContent = `Нанять джедая (100💰) (${gameState.jedi})`;
-  buyDeathStarButton.textContent = `Построить Звезду Смерти (1000💰) (${gameState.deathStars})`;
+function updateGame() {
+  // Обновляем значения
+  elements.credits.textContent = Math.floor(game.credits);
+  elements.droids.textContent = game.droids;
+  elements.ships.textContent = game.ships;
+  elements.droidCount.textContent = game.droids;
+  elements.shipCount.textContent = game.ships;
+  elements.jediCount.textContent = game.jedi;
+  elements.deathStarCount.textContent = game.deathStars;
+
+  // Обновляем доступность кнопок
+  elements.buyDroid.disabled = game.credits < 10;
+  elements.buyShip.disabled = game.credits < 50;
+  elements.buyJedi.disabled = game.credits < 100;
+  elements.buyDeathStar.disabled = game.credits < 1000;
+
+  // Пересчитываем бонусы
+  game.perClick = 1 + game.ships * 0.5 + game.jedi * 2 + game.deathStars * 10;
+  game.perSecond = game.droids * 0.1;
 }
 
 // Клик по мечу
-clickButton.addEventListener('click', () => {
-  gameState.credits += 1 + gameState.ships * 0.5 + gameState.jedi * 2 + gameState.deathStars * 10;
-  updateUI();
+elements.clickButton.addEventListener('click', () => {
+  game.credits += game.perClick;
+  updateGame();
   saveGame();
+  
+  // Анимация клика
+  const clickEffect = document.createElement('div');
+  clickEffect.className = 'click-effect';
+  clickEffect.textContent = `+${game.perClick.toFixed(1)}`;
+  clickEffect.style.left = `${Math.random() * 60 + 20}%`;
+  clickEffect.style.top = `${Math.random() * 60 + 20}%`;
+  document.querySelector('.main-content').appendChild(clickEffect);
+  
+  setTimeout(() => {
+    clickEffect.remove();
+  }, 1000);
 });
 
 // Покупки
-buyDroidButton.addEventListener('click', () => {
-  if (gameState.credits >= 10) {
-    gameState.credits -= 10;
-    gameState.droids += 1;
-    updateUI();
+elements.buyDroid.addEventListener('click', () => {
+  if (game.credits >= 10) {
+    game.credits -= 10;
+    game.droids += 1;
+    updateGame();
     saveGame();
   }
 });
 
-buyShipButton.addEventListener('click', () => {
-  if (gameState.credits >= 50) {
-    gameState.credits -= 50;
-    gameState.ships += 1;
-    updateUI();
+elements.buyShip.addEventListener('click', () => {
+  if (game.credits >= 50) {
+    game.credits -= 50;
+    game.ships += 1;
+    updateGame();
     saveGame();
   }
 });
 
-buyJediButton.addEventListener('click', () => {
-  if (gameState.credits >= 100) {
-    gameState.credits -= 100;
-    gameState.jedi += 1;
-    updateUI();
+elements.buyJedi.addEventListener('click', () => {
+  if (game.credits >= 100) {
+    game.credits -= 100;
+    game.jedi += 1;
+    updateGame();
     saveGame();
   }
 });
 
-buyDeathStarButton.addEventListener('click', () => {
-  if (gameState.credits >= 1000) {
-    gameState.credits -= 1000;
-    gameState.deathStars += 1;
-    updateUI();
+elements.buyDeathStar.addEventListener('click', () => {
+  if (game.credits >= 1000) {
+    game.credits -= 1000;
+    game.deathStars += 1;
+    updateGame();
     saveGame();
   }
 });
 
 // Переключение вкладок
-tabButtons.forEach(button => {
+elements.tabButtons.forEach(button => {
   button.addEventListener('click', () => {
-    tabButtons.forEach(btn => btn.classList.remove('active'));
-    tabContents.forEach(content => content.classList.remove('active'));
+    elements.tabButtons.forEach(btn => btn.classList.remove('active'));
+    elements.tabContents.forEach(content => content.classList.remove('active'));
     
     button.classList.add('active');
     document.getElementById(button.dataset.tab).classList.add('active');
   });
 });
 
-// Проверка WebApp Telegram
-if (window.Telegram?.WebApp) {
-  closeButton.style.display = 'block';
-  window.Telegram.WebApp.expand();
-}
-
-// Закрытие WebApp
-closeButton.addEventListener('click', () => {
-  if (window.Telegram?.WebApp) {
-    window.Telegram.WebApp.close();
-  }
-});
-
 // Пассивный доход
 setInterval(() => {
-  if (gameState.droids > 0) {
-    gameState.credits += gameState.droids * 0.1;
-    updateUI();
+  if (game.perSecond > 0) {
+    game.credits += game.perSecond;
+    updateGame();
     saveGame();
   }
 }, 1000);
 
 // Инициализация
 loadGame();
+updateGame();
