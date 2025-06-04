@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background: #000 url(assets/images/background.png') no-repeat center;
+  background: #000 url('https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/backgrounds.png') no-repeat center;) no-repeat center;
   background-size: cover;
   color: #FFE81F;
   text-align: center;
