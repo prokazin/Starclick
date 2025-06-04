@@ -1,79 +1,105 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Star Wars Clicker</title>
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* CSS содержимое будет ниже */
+    :root {
+      --yellow: #ffe81f;
+      --red: #e00606;
+      --blue: #00a2ff;
+      --bg: #000;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: var(--bg) url('https://i.imgur.com/JYw0aA0.jpg') no-repeat center/cover;
+      color: var(--yellow);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    /* ... остальные стили ... */
+  </style>
 </head>
 <body>
-  <div class="game-container">
-    <header>
-      <h1><span class="icon">⚔️</span> Star Wars Clicker</h1>
-    </header>
+  <div id="app">
+    <!-- Главное меню -->
+    <div id="main-menu" class="screen">
+      <h1>⚔️ Star Wars Clicker</h1>
+      <button id="new-game-btn">Новая игра</button>
+      <button id="leaderboard-btn">Топ игроков</button>
+    </div>
 
-    <div id="faction-screen" class="screen">
-      <h2>Выберите свою фракцию</h2>
+    <!-- Выбор фракции -->
+    <div id="faction-screen" class="screen hidden">
+      <h2>Выберите фракцию</h2>
       <div class="factions">
         <button id="light-side" class="faction-btn">
-          <img src="assets/light-side.jpg" alt="Светлая сторона">
-          <span>☀️ Светлая сторона</span>
-          <p>+ Автоклик каждые 5 сек</p>
+          ☀️ Светлая сторона<br>
+          <small>Автоклик каждые 5 сек</small>
         </button>
         <button id="dark-side" class="faction-btn">
-          <img src="assets/dark-side.jpg" alt="Тёмная сторона">
-          <span>☠️ Тёмная сторона</span>
-          <p>+ 2x сила клика</p>
+          ☠️ Тёмная сторона<br>
+          <small>2x сила клика</small>
         </button>
       </div>
     </div>
 
+    <!-- Игровой экран -->
     <div id="game-screen" class="screen hidden">
-      <div class="stats">
-        <div class="credits-display">
-          <span>CR:</span>
-          <span id="credits">0</span>
-        </div>
-        <div id="faction-indicator"></div>
+      <div class="header">
+        <span id="credits-display">0 CR</span>
+        <button id="shop-btn">Магазин</button>
       </div>
-
-      <button id="click-btn" class="clicker-btn">АТАКОВАТЬ!</button>
-
-      <div id="offline-bonus" class="notification hidden">
-        За время отсутствия: +<span id="offline-credits">0</span> CR
-      </div>
-
-      <div class="shop">
-        <h3>⚙️ Армейский арсенал</h3>
-        <div id="units-list" class="units-grid"></div>
-      </div>
-
-      <div id="boss-container" class="boss-container hidden">
-        <h3>🚨 Появился босс!</h3>
-        <div class="boss-info">
-          <span id="boss-emoji"></span>
-          <span id="boss-name"></span>
-          <span id="boss-hp"></span>
-        </div>
-        <button id="attack-boss-btn" class="boss-btn">Атаковать</button>
+      
+      <button id="click-btn">АТАКОВАТЬ</button>
+      
+      <div id="offline-bonus" class="hidden">
+        +<span id="offline-credits">0</span> CR за время отсутствия
       </div>
     </div>
 
-    <div class="leaderboard">
-      <h3>🏆 Галактический топ</h3>
+    <!-- Магазин -->
+    <div id="shop-screen" class="screen hidden">
+      <h2>🛒 Армейский арсенал</h2>
+      <div id="units-list"></div>
+      <button class="back-btn">← Назад</button>
+    </div>
+
+    <!-- Босс -->
+    <div id="boss-screen" class="screen hidden">
+      <h2 id="boss-title">Дарт Вейдер</h2>
+      <div id="boss-hp-bar"></div>
+      <button id="attack-boss-btn">АТАКОВАТЬ</button>
+      <button class="back-btn">Убежать</button>
+    </div>
+
+    <!-- Топ игроков -->
+    <div id="leaderboard-screen" class="screen hidden">
+      <h2>🏆 Галактический топ</h2>
       <div id="leaderboard-list"></div>
-    </div>
-
-    <div id="name-modal" class="modal">
-      <div class="modal-content">
-        <h3>Введите имя</h3>
-        <input type="text" id="player-name" placeholder="Имя командира">
-        <button id="save-name-btn">Сохранить</button>
-      </div>
+      <button class="back-btn">← Назад</button>
     </div>
   </div>
 
-  <script type="module" src="game.js"></script>
+  <script>
+    // JS содержимое будет ниже
+    const Game = {
+      credits: 0,
+      faction: null,
+      units: {
+        stormtrooper: { price: 15, income: 0.3, owned: 0 },
+        droid: { price: 50, income: 1, owned: 0 },
+        xwing: { price: 200, income: 5, owned: 0 }
+      },
+      bosses: [
+        { name: "Дарт Мол", hp: 500, reward: 200 }
+      ],
+      currentBoss: null
+    };
+
+    // ... остальной JS код ...
+  </script>
 </body>
 </html>
