@@ -1,105 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Star Wars Clicker</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    /* CSS содержимое будет ниже */
-    :root {
-      --yellow: #ffe81f;
-      --red: #e00606;
-      --blue: #00a2ff;
-      --bg: #000;
-    }
-    body {
-      font-family: 'Arial', sans-serif;
-      background: var(--bg) url('https://i.imgur.com/JYw0aA0.jpg') no-repeat center/cover;
-      color: var(--yellow);
-      margin: 0;
-      padding: 20px;
-      min-height: 100vh;
-    }
-    /* ... остальные стили ... */
-  </style>
+  <title>Star Wars Clicker</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app">
-    <!-- Главное меню -->
-    <div id="main-menu" class="screen">
-      <h1>⚔️ Star Wars Clicker</h1>
-      <button id="new-game-btn">Новая игра</button>
-      <button id="leaderboard-btn">Топ игроков</button>
+  <div class="container">
+    <h1>🌌 Galactic Economy</h1>
+    
+    <div class="stats">
+      <p>Credits: <span id="credits">0</span> 💰</p>
+      <p>Droids: <span id="droids">0</span> 🤖</p>
+      <p>Ships: <span id="ships">0</span> 🚀</p>
     </div>
 
-    <!-- Выбор фракции -->
-    <div id="faction-screen" class="screen hidden">
-      <h2>Выберите фракцию</h2>
-      <div class="factions">
-        <button id="light-side" class="faction-btn">
-          ☀️ Светлая сторона<br>
-          <small>Автоклик каждые 5 сек</small>
-        </button>
-        <button id="dark-side" class="faction-btn">
-          ☠️ Тёмная сторона<br>
-          <small>2x сила клика</small>
-        </button>
-      </div>
+    <button id="clickButton" class="click-button">Smuggle Goods</button>
+
+    <div class="upgrades">
+      <button id="buyDroid" class="upgrade-button">Buy Droid (10💰)</button>
+      <button id="buyShip" class="upgrade-button">Buy Ship (50💰)</button>
     </div>
 
-    <!-- Игровой экран -->
-    <div id="game-screen" class="screen hidden">
-      <div class="header">
-        <span id="credits-display">0 CR</span>
-        <button id="shop-btn">Магазин</button>
-      </div>
-      
-      <button id="click-btn">АТАКОВАТЬ</button>
-      
-      <div id="offline-bonus" class="hidden">
-        +<span id="offline-credits">0</span> CR за время отсутствия
-      </div>
-    </div>
-
-    <!-- Магазин -->
-    <div id="shop-screen" class="screen hidden">
-      <h2>🛒 Армейский арсенал</h2>
-      <div id="units-list"></div>
-      <button class="back-btn">← Назад</button>
-    </div>
-
-    <!-- Босс -->
-    <div id="boss-screen" class="screen hidden">
-      <h2 id="boss-title">Дарт Вейдер</h2>
-      <div id="boss-hp-bar"></div>
-      <button id="attack-boss-btn">АТАКОВАТЬ</button>
-      <button class="back-btn">Убежать</button>
-    </div>
-
-    <!-- Топ игроков -->
-    <div id="leaderboard-screen" class="screen hidden">
-      <h2>🏆 Галактический топ</h2>
-      <div id="leaderboard-list"></div>
-      <button class="back-btn">← Назад</button>
-    </div>
+    <!-- Для Telegram WebApp -->
+    <button id="closeButton" class="close-button">Close</button>
   </div>
 
-  <script>
-    // JS содержимое будет ниже
-    const Game = {
-      credits: 0,
-      faction: null,
-      units: {
-        stormtrooper: { price: 15, income: 0.3, owned: 0 },
-        droid: { price: 50, income: 1, owned: 0 },
-        xwing: { price: 200, income: 5, owned: 0 }
-      },
-      bosses: [
-        { name: "Дарт Мол", hp: 500, reward: 200 }
-      ],
-      currentBoss: null
-    };
-
-    // ... остальной JS код ...
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
