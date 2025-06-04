@@ -1,120 +1,79 @@
+/* Основные стили */
 :root {
-  --light-color: #ffe81f;
-  --dark-color: #e00606;
-  --neutral-color: #4bd5ee;
-  --bg-color: #000;
+  --yellow: #ffe81f;
+  --red: #e00606;
+  --blue: #00a2ff;
+  --bg: #000;
   --card-bg: rgba(0, 0, 0, 0.7);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Orbitron', sans-serif;
-}
-
 body {
-  background: var(--bg-color) url('assets/background.jpg') no-repeat center/cover;
-  color: var(--light-color);
+  font-family: 'Arial', sans-serif;
+  background: var(--bg) url('https://i.imgur.com/JYw0aA0.jpg') no-repeat center/cover;
+  color: var(--yellow);
+  margin: 0;
+  padding: 20px;
   min-height: 100vh;
-  padding: 20px;
 }
 
-.game-container {
-  max-width: 800px;
+/* Контейнеры */
+.screen {
+  display: none;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
-}
-
-header h1 {
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 2.5rem;
-  text-shadow: 0 0 10px var(--light-color);
 }
-
-/* Faction selection screen */
-.factions {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.faction-btn {
-  background: var(--card-bg);
-  border: 3px solid;
-  border-radius: 10px;
-  padding: 15px;
-  width: 250px;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.faction-btn:hover {
-  transform: scale(1.05);
-}
-
-/* Game screen styles */
-.stats {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.clicker-btn {
-  background: var(--card-bg);
-  border: 3px solid var(--light-color);
-  color: var(--light-color);
-  font-size: 1.5rem;
-  padding: 15px 30px;
-  margin: 20px auto;
+.screen.active {
   display: block;
+}
+
+/* Кнопки */
+button {
+  background: var(--card-bg);
+  color: var(--yellow);
+  border: 2px solid var(--yellow);
+  padding: 12px 24px;
+  margin: 10px;
+  font-size: 18px;
   cursor: pointer;
+  border-radius: 8px;
   transition: all 0.3s;
 }
 
-/* Responsive design */
+button:hover {
+  transform: scale(1.05);
+}
+
+.faction-btn {
+  display: block;
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+#light-side {
+  border-color: var(--blue);
+}
+#dark-side {
+  border-color: var(--red);
+}
+
+/* Игровой интерфейс */
+#click-btn {
+  font-size: 24px;
+  padding: 20px 40px;
+  margin: 30px auto;
+  background: rgba(255, 0, 0, 0.3);
+}
+
+/* Адаптивность */
 @media (max-width: 600px) {
-  .factions {
-    flex-direction: column;
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
   }
   
-  .clicker-btn {
-    font-size: 1.2rem;
-    padding: 12px 24px;
+  #click-btn {
+    padding: 15px 30px;
   }
-}
-
-/* Адаптивный игровой интерфейс */
-.clicker-btn {
-  background: url('../assets/images/buttons/attack.png') no-repeat center;
-  width: 200px;
-  height: 200px;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-@media (max-width: 600px) {
-  .clicker-btn {
-    width: 150px;
-    height: 150px;
-  }
-}
-
-/* Анимация клика */
-.clicker-btn:active {
-  transform: scale(0.95);
-}
-
-/* Стили фракций */
-.faction-light {
-  background-color: rgba(0, 100, 255, 0.1);
-  border: 2px solid #00a2ff;
-}
-
-.faction-dark {
-  background-color: rgba(255, 0, 0, 0.1);
-  border: 2px solid #ff0000;
 }
