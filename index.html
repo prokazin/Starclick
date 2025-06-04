@@ -17,12 +17,22 @@
     </div>
 
     <button id="clickButton" class="click-button">
-      <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/sword.jpeg" alt="Меч" class="sword-icon">
+      <img src="sword.png" alt="Меч" class="sword-icon">
     </button>
 
-    <div class="upgrades">
+    <div class="tabs">
+      <button class="tab-button active" data-tab="upgrades">Улучшения</button>
+      <button class="tab-button" data-tab="shop">Магазин</button>
+    </div>
+
+    <div id="upgrades" class="tab-content active">
       <button id="buyDroid" class="upgrade-button">Купить дроида (10💰)</button>
       <button id="buyShip" class="upgrade-button">Купить корабль (50💰)</button>
+    </div>
+
+    <div id="shop" class="tab-content">
+      <button id="buyJedi" class="upgrade-button">Нанять джедая (100💰)</button>
+      <button id="buyDeathStar" class="upgrade-button">Построить Звезду Смерти (1000💰)</button>
     </div>
 
     <button id="closeButton" class="close-button">Закрыть</button>
