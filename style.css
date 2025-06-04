@@ -1,6 +1,8 @@
 :root {
   --yellow: #FFE81F;
   --blue: #00B4FF;
+  --red: #FF3E3E;
+  --green: #4CAF50;
   --dark: rgba(0, 0, 0, 0.6);
   --darker: rgba(0, 0, 0, 0.8);
 }
@@ -8,11 +10,11 @@
 * {
   box-sizing: border-box;
   user-select: none;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  padding: 0;
   font-family: 'Arial', sans-serif;
   background: #000 url('https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/backgrounds.png') no-repeat center;
   background-size: cover;
@@ -25,11 +27,108 @@ body {
   overflow: hidden;
 }
 
+/* Стили выбора фракции */
+.faction-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  color: var(--yellow);
+  text-align: center;
+  padding: 20px;
+}
+
+.faction-screen h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px var(--yellow);
+}
+
+.factions {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1000px;
+}
+
+.faction {
+  background: rgba(30, 30, 30, 0.8);
+  border: 2px solid #444;
+  border-radius: 15px;
+  padding: 1.5rem;
+  width: 280px;
+  transition: all 0.3s;
+}
+
+.faction[data-faction="republic"] {
+  border-color: var(--blue);
+}
+.faction[data-faction="empire"] {
+  border-color: var(--red);
+}
+.faction[data-faction="hutt"] {
+  border-color: var(--green);
+}
+
+.faction:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 232, 31, 0.3);
+}
+
+.faction img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.faction h2 {
+  color: var(--yellow);
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.faction p {
+  color: #AAA;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.select-faction {
+  background: var(--yellow);
+  color: #000;
+  border: none;
+  padding: 0.7rem 1.8rem;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+.select-faction:hover {
+  background: #FFF;
+  transform: scale(1.05);
+}
+
+/* Основной игровой интерфейс */
 .container {
   width: 100%;
   max-width: 500px;
   height: 90vh;
-  display: flex;
+  display: none;
   flex-direction: column;
   background-color: var(--dark);
   border: 2px solid var(--yellow);
@@ -37,6 +136,27 @@ body {
   padding: 20px;
   position: relative;
   backdrop-filter: blur(5px);
+}
+
+.faction-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.5);
+}
+
+.faction-banner img {
+  width: 40px;
+  height: 40px;
+}
+
+#faction-name {
+  font-size: 1.3rem;
+  font-weight: bold;
 }
 
 .header {
@@ -184,7 +304,7 @@ body {
 }
 
 .count {
-  background: rgba(255, 232, 31, 0.2);
+  background: rgba(255, 232, 31, 0.3);
   padding: 3px 10px;
   border-radius: 12px;
 }
@@ -206,6 +326,10 @@ body {
   100% { transform: translateY(-120px) scale(1.5); opacity: 0; }
 }
 
+.hidden {
+  display: none !important;
+}
+
 @media (max-width: 600px) {
   .container {
     max-width: 90vw;
@@ -220,5 +344,16 @@ body {
   .sword-blade {
     width: 50px;
     height: 200px;
+  }
+
+  .factions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .faction {
+    width: 100%;
+    max-width: 300px;
+    padding: 1rem;
   }
 }
