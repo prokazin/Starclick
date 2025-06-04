@@ -1,44 +1,87 @@
+:root {
+  --light-color: #ffe81f;
+  --dark-color: #e00606;
+  --neutral-color: #4bd5ee;
+  --bg-color: #000;
+  --card-bg: rgba(0, 0, 0, 0.7);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Orbitron', sans-serif;
+}
+
 body {
-  font-family: 'Arial', sans-serif;
-  background: url('assets/background.jpg') no-repeat center fixed;
-  background-size: cover;
-  color: yellow;
-  text-align: center;
+  background: var(--bg-color) url('assets/background.jpg') no-repeat center/cover;
+  color: var(--light-color);
+  min-height: 100vh;
   padding: 20px;
 }
 
-#game-container {
-  max-width: 600px;
+.game-container {
+  max-width: 800px;
   margin: 0 auto;
-  background: rgba(0, 0, 0, 0.7);
   padding: 20px;
-  border-radius: 10px;
-  border: 2px solid yellow;
 }
 
-.click-btn {
-  background: #000;
-  color: yellow;
-  border: 2px solid yellow;
-  padding: 15px 30px;
-  font-size: 20px;
+header h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  text-shadow: 0 0 10px var(--light-color);
+}
+
+/* Faction selection screen */
+.factions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.faction-btn {
+  background: var(--card-bg);
+  border: 3px solid;
+  border-radius: 10px;
+  padding: 15px;
+  width: 250px;
   cursor: pointer;
-  margin: 20px 0;
+  transition: transform 0.3s;
+}
+
+.faction-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Game screen styles */
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.clicker-btn {
+  background: var(--card-bg);
+  border: 3px solid var(--light-color);
+  color: var(--light-color);
+  font-size: 1.5rem;
+  padding: 15px 30px;
+  margin: 20px auto;
+  display: block;
+  cursor: pointer;
   transition: all 0.3s;
 }
 
-.leaderboard {
-  background: rgba(0, 0, 0, 0.7);
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 20px;
-  border: 1px solid yellow;
-}
-
-/* Адаптивность для мобилок */
+/* Responsive design */
 @media (max-width: 600px) {
-  .click-btn {
+  .factions {
+    flex-direction: column;
+  }
+  
+  .clicker-btn {
+    font-size: 1.2rem;
     padding: 12px 24px;
-    font-size: 18px;
   }
 }
