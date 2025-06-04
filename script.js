@@ -1,10 +1,8 @@
-// Состояние игры
 let credits = 0;
 let droids = 0;
 let ships = 0;
 let isWebApp = false;
 
-// Элементы DOM
 const creditsEl = document.getElementById('credits');
 const droidsEl = document.getElementById('droids');
 const shipsEl = document.getElementById('ships');
@@ -13,7 +11,7 @@ const buyDroidButton = document.getElementById('buyDroid');
 const buyShipButton = document.getElementById('buyShip');
 const closeButton = document.getElementById('closeButton');
 
-// Проверка на Telegram WebApp
+// Проверка WebApp Telegram
 if (window.Telegram?.WebApp) {
   isWebApp = true;
   closeButton.style.display = 'block';
@@ -29,7 +27,7 @@ function updateUI() {
   buyShipButton.disabled = credits < 50;
 }
 
-// Клик по кнопке
+// Клик по мечу
 clickButton.addEventListener('click', () => {
   credits += 1 + ships * 0.5;
   updateUI();
@@ -60,7 +58,7 @@ closeButton.addEventListener('click', () => {
   }
 });
 
-// Пассивный доход (1 кредит/сек за каждого дроида)
+// Пассивный доход
 setInterval(() => {
   if (droids > 0) {
     credits += droids * 0.1;
@@ -68,5 +66,4 @@ setInterval(() => {
   }
 }, 1000);
 
-// Инициализация
 updateUI();
