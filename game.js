@@ -1,93 +1,68 @@
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyYOUR_API_KEY",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef123456"
-};
-
-// Game state
-const gameState = {
+// Состояние игры
+const GameState = {
   credits: 0,
   clickPower: 1,
   faction: null,
   lastPlayed: Date.now(),
   units: {
-    stormtrooper: { price: 15, income: 0.3, owned: 0, emoji: "🪖", faction: "dark" },
-    droid: { price: 75, income: 1.2, owned: 0, emoji: "🤖", faction: "neutral" },
-    xwing: { price: 300, income: 6, owned: 0, emoji: "✈️", faction: "light" },
-    tie_fighter: { price: 300, income: 6, owned: 0, emoji: "🚀", faction: "dark" },
-    death_star: { price: 10000, income: 100, owned: 0, emoji: "🌑", faction: "dark" }
+    stormtrooper: { price: 15, income: 0.3, owned: 0, emoji: "🪖" },
+    droid: { price: 50, income: 1, owned: 0, emoji: "🤖" },
+    xwing: { price: 200, income: 5, owned: 0, emoji: "✈️" },
+    tieFighter: { price: 200, income: 5, owned: 0, emoji: "🚀" }
   },
   bosses: [
-    { name: "Дарт Мол", hp: 800, reward: 500, emoji: "⚔️", faction: "dark" },
-    { name: "Люк Скайуокер", hp: 1200, reward: 800, emoji: "🔮", faction: "light" }
+    { name: "Дарт Мол", hp: 500, reward: 200, emoji: "⚔️" },
+    { name: "Люк Скайуокер", hp: 800, reward: 400, emoji: "🔮" }
   ],
   currentBoss: null
 };
 
-function calculateOfflineProgress() {
-  if (!GameState.lastPlayed) return;
-  
-  const secondsPassed = Math.floor((Date.now() - GameState.lastPlayed) / 1000);
-  if (secondsPassed > 10) { // Минимум 10 сек
-    const incomePerSecond = Object.values(GameState.units)
-      .reduce((sum, unit) => sum + (unit.income * unit.owned), 0);
-    
-    const offlineCredits = Math.floor(secondsPassed * incomePerSecond);
-    if (offlineCredits > 0) {
-      GameState.credits += offlineCredits;
-      showOfflineBonus(offlineCredits);
-    }
-  }
-}
-
-// DOM Elements
+// DOM элементы
 const elements = {
-  factionScreen: document.getElementById('faction-screen'),
-  gameScreen: document.getElementById('game-screen'),
-  clickBtn: document.getElementById('click-btn'),
-  creditsDisplay: document.getElementById('credits'),
-  unitsList: document.getElementById('units-list'),
-  bossContainer: document.getElementById('boss-container'),
-  offlineBonus: document.getElementById('offline-bonus'),
-  leaderboardList: document.getElementById('leaderboard-list')
+  screens: {
+    main: document.getElementById('main-menu'),
+    faction: document.getElementById('faction-screen'),
+    game: document.getElementById('game-screen'),
+    shop: document.getElementById('shop-screen'),
+    boss: document.getElementById('boss-screen'),
+    leaderboard: document.getElementById('leaderboard-screen')
+  },
+  buttons: {
+    newGame: document.getElementById('new-game-btn'),
+    lightSide: document.getElementById('light-side'),
+    darkSide: document.getElementById('dark-side'),
+    click: document.getElementById('click-btn'),
+    shop: document.getElementById('shop-btn'),
+    attackBoss: document.getElementById('attack-boss-btn')
+  },
+  displays: {
+    credits: document.getElementById('credits-display'),
+    offline: document.getElementById('offline-credits'),
+    units: document.getElementById('units-list'),
+    leaderboard: document.getElementById('leaderboard-list'),
+    bossHp: document.getElementById('boss-hp-bar'),
+    bossTitle: document.getElementById('boss-title')
+  }
 };
 
-// Initialize Firebase
-function initFirebase() {
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const auth = firebase.auth();
-  
-  auth.signInAnonymously()
-    .then(() => console.log("Signed in anonymously"))
-    .catch(error => console.error("Auth error:", error));
-    
-  return db;
-}
-
-// Game initialization
+// Инициализация игры
 function initGame() {
   loadGame();
-  renderUnits();
   setupEventListeners();
+  renderUnits();
   startGameLoop();
   checkOfflineProgress();
-  showNameModal();
 }
 
-// Core game loop
+// Основной игровой цикл
 function startGameLoop() {
   setInterval(() => {
-    // Auto income
+    // Автоматический доход
     const income = calculateIncome();
-    gameState.credits += income;
+    GameState.credits += income;
     
-    // Boss spawn chance
-    if (!gameState.currentBoss && Math.random() < 0.008) {
+    // Спавн босса
+    if (!GameState.currentBoss && Math.random() < 0.01) {
       spawnBoss();
     }
     
@@ -96,11 +71,21 @@ function startGameLoop() {
   }, 1000);
 }
 
-// All other functions (handleClick, buyUnit, attackBoss, etc.)
-// ... (complete implementation available at github.com/your-repo)
+// Покупка юнита
+function buyUnit(unitType) {
+  const unit = GameState.units[unitType];
+  if (GameState.credits >= unit.price) {
+    GameState.credits -= unit.price;
+    unit.owned++;
+    unit.price = Math.floor(unit.price * 1.15);
+    updateUI();
+    saveGame();
+  } else {
+    alert("Недостаточно CR!");
+  }
+}
 
-// Start the game when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  const db = initFirebase();
-  initGame();
-});
+// ... остальные функции (атака босса, сохранение, загрузка и т.д.)
+
+// Запуск игры
+window.onload = initGame;
