@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Star Wars Clicker</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* CSS будет здесь */
+  </style>
 </head>
 <body>
   <div id="loading-screen" class="loading-screen">
@@ -99,6 +101,9 @@
       <button class="tab-button" data-tab="prestige">
         <i class="fas fa-star"></i>
       </button>
+      <button class="tab-button" data-tab="leaderboard">
+        <i class="fas fa-users"></i>
+      </button>
     </div>
 
     <div id="upgrades" class="tab-content active">
@@ -181,74 +186,35 @@
       </div>
     </div>
 
+    <div id="leaderboard" class="tab-content">
+      <div class="leaderboard-filters">
+        <select id="leaderboard-filter">
+          <option value="all">Все игроки</option>
+          <option value="republic">Республика</option>
+          <option value="empire">Империя</option>
+          <option value="hutt">Хатты</option>
+        </select>
+        <select id="leaderboard-sort">
+          <option value="credits">По кредитам</option>
+          <option value="prestige">По престижу</option>
+          <option value="clickPower">По силе клика</option>
+        </select>
+      </div>
+      
+      <div id="leaderboard-container" class="leaderboard-container">
+        <!-- Таблица рейтинга будет здесь -->
+      </div>
+      
+      <div class="player-stats">
+        <h3>Ваша позиция</h3>
+        <div id="player-position">-</div>
+      </div>
+    </div>
+
     <div id="offline-notification" class="offline-notification" style="display: none;">
       <p>Вы заработали <span id="offline-earnings">0</span> кредитов, пока были оффлайн!</p>
     </div>
   </div>
-
-  <!-- Мультиплеер модальное окно -->
-  <div id="multiplayer-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2><i class="fas fa-users"></i> Мультиплеер</h2>
-      
-      <div class="multiplayer-tabs">
-        <button class="mp-tab active" data-tab="leaderboard">Рейтинг</button>
-        <button class="mp-tab" data-tab="friends">Друзья</button>
-      </div>
-      
-      <div id="leaderboard-content" class="mp-tab-content active">
-        <div class="leaderboard-filters">
-          <select id="leaderboard-filter">
-            <option value="all">Все игроки</option>
-            <option value="republic">Республика</option>
-            <option value="empire">Империя</option>
-            <option value="hutt">Хатты</option>
-          </select>
-          <select id="leaderboard-sort">
-            <option value="credits">По кредитам</option>
-            <option value="prestige">По престижу</option>
-            <option value="clickPower">По силе клика</option>
-          </select>
-        </div>
-        
-        <div id="leaderboard" class="leaderboard">
-          <!-- Заполнится через JS -->
-        </div>
-        
-        <div class="player-stats">
-          <h3>Ваша позиция</h3>
-          <div id="player-position">-</div>
-        </div>
-      </div>
-      
-      <div id="friends-content" class="mp-tab-content">
-        <div class="friends-search">
-          <input type="text" id="friend-search" placeholder="Найти игрока...">
-          <button id="search-friend"><i class="fas fa-search"></i></button>
-        </div>
-        
-        <div id="search-results" class="search-results" style="display: none;">
-          <h4>Результаты поиска</h4>
-          <div id="found-players"></div>
-        </div>
-        
-        <div class="friends-list">
-          <h4>Ваши друзья</h4>
-          <div id="friends-container"></div>
-        </div>
-        
-        <div class="friend-requests">
-          <h4>Запросы в друзья <span id="requests-count">0</span></h4>
-          <div id="requests-container"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <button id="multiplayer-button" class="multiplayer-button">
-    <i class="fas fa-users"></i>
-  </button>
 
   <div id="prestige-effects"></div>
 
@@ -257,6 +223,8 @@
   <audio id="prestige-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
   <audio id="levelup-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"></audio>
 
-  <script src="script.js"></script>
+  <script>
+    // JavaScript будет здесь
+  </script>
 </body>
 </html>
