@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Star Wars Clicker</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div id="loading-screen" class="loading-screen">
@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div id="faction-select" class="faction-screen hidden">
+  <div id="faction-select" class="faction-screen" style="display: none;">
     <h1>Выберите фракцию</h1>
     <div class="factions-container">
       <div class="factions-scroll">
@@ -54,7 +54,7 @@
     </div>
   </div>
 
-  <div id="game-container" class="container hidden">
+  <div id="game-container" class="container" style="display: none;">
     <div class="faction-banner">
       <img id="faction-logo" src="" alt="Фракция">
       <span id="faction-name"></span>
@@ -132,7 +132,7 @@
       </div>
     </div>
 
-    <div id="offline-notification" class="offline-notification hidden">
+    <div id="offline-notification" class="offline-notification" style="display: none;">
       <p>Вы заработали <span id="offline-earnings">0</span> кредитов, пока были оффлайн!</p>
     </div>
   </div>
