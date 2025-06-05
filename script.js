@@ -1,3 +1,53 @@
+// Конфигурация престижа
+const PRESTIGE_CONFIG = {
+  requirements: [
+    0,      // Уровень 0 (нет престижа)
+    1e6,    // 1M - Уровень 1
+    2e6,    // 2M - Уровень 2
+    5e6,    // 5M - Уровень 3
+    1e7,    // 10M - Уровень 4
+    2e7,    // 20M - Уровень 5
+    5e7,    // 50M - Уровень 6
+    1e8,    // 100M - Уровень 7
+    2e8,    // 200M - Уровень 8
+    5e8,    // 500M - Уровень 9
+    1e9,    // 1B - Уровень 10
+    2e9,    // 2B - Уровень 11
+    5e9,    // 5B - Уровень 12
+    1e10,   // 10B - Уровень 13
+    2e10,   // 20B - Уровень 14
+    5e10,   // 50B - Уровень 15
+    1e11,   // 100B - Уровень 16
+    2e11,   // 200B - Уровень 17
+    5e11,   // 500B - Уровень 18
+    1e12,   // 1T - Уровень 19
+    2e12    // 2T - Уровень 20
+  ],
+  rewards: [
+    null, // Уровень 0
+    { name: "Новичок", icon: "fa-star", bonus: "Доход +10%", multiplier: 1.1, effect: null },
+    { name: "Ученик", icon: "fa-jedi", bonus: "Дроиды +15%", multiplier: 1.15, effect: null },
+    { name: "Падаван", icon: "fa-rocket", bonus: "Клики +20%", multiplier: 1.2, effect: null },
+    { name: "Рыцарь", icon: "fa-medal", bonus: "Доход +25%", multiplier: 1.25, effect: null },
+    { name: "Мастер", icon: "fa-crown", bonus: "Золотой меч", multiplier: 1.5, effect: "gold" },
+    { name: "Ситх", icon: "fa-hand-fist", bonus: "Клики x2", multiplier: 2.0, effect: "red" },
+    { name: "Мандалорец", icon: "fa-helmet-battle", bonus: "Корабли +30%", multiplier: 1.3, effect: null },
+    { name: "Генерал", icon: "fa-flag", bonus: "Доход +40%", multiplier: 1.4, effect: null },
+    { name: "Адмирал", icon: "fa-ship", bonus: "Звезды Смерти +50%", multiplier: 1.5, effect: null },
+    { name: "Легенда", icon: "fa-trophy", bonus: "Красный меч", multiplier: 3.0, effect: "red" },
+    { name: "Мифический", icon: "fa-dragon", bonus: "Доход x4", multiplier: 4.0, effect: "purple" },
+    { name: "Божественный", icon: "fa-gem", bonus: "Все +50%", multiplier: 1.5, effect: "blue" },
+    { name: "Создатель", icon: "fa-wand-magic", bonus: "Дроиды x2", multiplier: 2.0, effect: null },
+    { name: "Повелитель", icon: "fa-crown", bonus: "Клики x5", multiplier: 5.0, effect: "gold" },
+    { name: "Император", icon: "fa-empire", bonus: "Синий меч", multiplier: 5.0, effect: "blue" },
+    { name: "Властелин", icon: "fa-ring", bonus: "Доход x10", multiplier: 10.0, effect: "purple" },
+    { name: "Бессмертный", icon: "fa-infinity", bonus: "Все x3", multiplier: 3.0, effect: null },
+    { name: "Вечный", icon: "fa-hourglass-end", bonus: "Меч тьмы", multiplier: 7.0, effect: "dark" },
+    { name: "Абсолют", icon: "fa-atom", bonus: "Бесконечность", multiplier: 10.0, effect: "rainbow" },
+    { name: "БОГ", icon: "fa-crown", bonus: "ВСЁ x20", multiplier: 20.0, effect: "god" }
+  ]
+};
+
 // Состояние игры
 const game = {
   credits: 0,
@@ -17,6 +67,11 @@ const game = {
     republic: { droidIncome: 1.2, jediCost: 0.85 },
     empire: { clickIncome: 1.25, deathStarCost: 0.8 },
     hutt: { baseIncome: 1.3, shipCost: 0.8 }
+  },
+  prestige: {
+    level: 0,
+    points: 0,
+    nextRequirement: 1e6
   }
 };
 
@@ -30,6 +85,7 @@ const elements = {
   credits: document.getElementById('credits'),
   droids: document.getElementById('droids'),
   ships: document.getElementById('ships'),
+  prestigeLevelUI: document.getElementById('prestige-level-ui'),
   droidCount: document.getElementById('droidCount'),
   shipCount: document.getElementById('shipCount'),
   jediCount: document.getElementById('jediCount'),
@@ -45,7 +101,17 @@ const elements = {
   offlineNotification: document.getElementById('offline-notification'),
   offlineEarnings: document.getElementById('offline-earnings'),
   clickSound: document.getElementById('clickSound'),
-  buySound: document.getElementById('buySound')
+  buySound: document.getElementById('buySound'),
+  prestigeButton: document.getElementById('prestige-button'),
+  prestigeLevel: document.getElementById('prestige-level'),
+  prestigePoints: document.getElementById('prestige-points'),
+  prestigeProgress: document.getElementById('prestige-progress'),
+  prestigeRemaining: document.getElementById('prestige-remaining'),
+  incomeMultiplier: document.getElementById('income-multiplier'),
+  rewardsGrid: document.getElementById('rewards-grid'),
+  prestigeEffects: document.getElementById('prestige-effects'),
+  prestigeSound: document.getElementById('prestige-sound'),
+  levelupSound: document.getElementById('levelup-sound')
 };
 
 // Инициализация фракции
@@ -81,23 +147,37 @@ function getPrice(type, count) {
   return Math.floor(price);
 }
 
-// Расчет доходов
+// Расчет доходов с учетом престижа
 function calculateClickIncome() {
   let income = 1;
   income += game.ships * 0.5;
   income += game.jedi * 2;
   income += game.deathStars * 5;
   
+  // Бонусы фракций
   if (game.faction === 'empire') income *= game.bonuses.empire.clickIncome;
   if (game.faction === 'hutt') income *= game.bonuses.hutt.baseIncome;
+  
+  // Бонус престижа
+  if (game.prestige.level > 0) {
+    income *= PRESTIGE_CONFIG.rewards[game.prestige.level].multiplier;
+  }
   
   return income;
 }
 
 function calculatePassiveIncome() {
   let income = game.droids * 0.1;
+  
+  // Бонусы фракций
   if (game.faction === 'republic') income *= game.bonuses.republic.droidIncome;
   if (game.faction === 'hutt') income *= game.bonuses.hutt.baseIncome;
+  
+  // Бонус престижа
+  if (game.prestige.level > 0) {
+    income *= PRESTIGE_CONFIG.rewards[game.prestige.level].multiplier;
+  }
+  
   return income;
 }
 
@@ -127,6 +207,7 @@ function updateGame() {
   elements.credits.textContent = Math.floor(game.credits);
   elements.droids.textContent = game.droids;
   elements.ships.textContent = game.ships;
+  elements.prestigeLevelUI.textContent = game.prestige.level;
   elements.droidCount.textContent = game.droids;
   elements.shipCount.textContent = game.ships;
   elements.jediCount.textContent = game.jedi;
@@ -141,6 +222,9 @@ function updateGame() {
   elements.buyShip.disabled = game.credits < getPrice('ship', game.ships);
   elements.buyJedi.disabled = game.credits < getPrice('jedi', game.jedi);
   elements.buyDeathStar.disabled = game.credits < getPrice('deathStar', game.deathStars);
+  
+  // Обновляем UI престижа
+  updatePrestigeUI();
 }
 
 // Сохранение игры
@@ -161,7 +245,9 @@ function loadGame() {
     game.deathStars = data.deathStars || 0;
     game.faction = data.faction || null;
     game.lastPlayed = data.lastPlayed || Date.now();
+    game.prestige = data.prestige || { level: 0, points: 0, nextRequirement: 1e6 };
     
+    // Рассчитываем оффлайн-доход
     if (data.lastPlayed) {
       const offlineTime = Date.now() - data.lastPlayed;
       const maxOfflineTime = 24 * 60 * 60 * 1000;
@@ -184,6 +270,7 @@ function loadGame() {
       initFaction(game.faction);
     }
     updateGame();
+    createRewardsGrid();
   }
 }
 
@@ -198,30 +285,167 @@ function createClickEffect(x, y, amount) {
   setTimeout(() => effect.remove(), 1000);
 }
 
-// Центрирование фракции Империи
-function centerEmpireFaction() {
-  const container = document.querySelector('.factions-container');
-  const empire = document.querySelector('.faction[data-faction="empire"]');
-  if (container && empire) {
-    container.scrollLeft = empire.offsetLeft - (container.offsetWidth / 2) + (empire.offsetWidth / 2);
+// Престиж система
+function updatePrestigeUI() {
+  const nextReq = PRESTIGE_CONFIG.requirements[game.prestige.level + 1] || PRESTIGE_CONFIG.requirements[20];
+  game.prestige.nextRequirement = nextReq;
+  
+  elements.prestigeLevel.textContent = game.prestige.level;
+  elements.prestigePoints.textContent = game.prestige.points;
+  elements.incomeMultiplier.textContent = `${getCurrentMultiplier().toFixed(1)}x`;
+  
+  if (game.prestige.level < 20) {
+    const remaining = nextReq - game.credits;
+    elements.prestigeRemaining.textContent = formatNumber(nextReq);
+    const progress = Math.min((game.credits / nextReq) * 100, 100);
+    elements.prestigeProgress.style.width = `${progress}%`;
+    elements.prestigeButton.disabled = game.credits < nextReq;
+  } else {
+    elements.prestigeRemaining.textContent = "МАКСИМУМ";
+    elements.prestigeProgress.style.width = `100%`;
+    elements.prestigeButton.disabled = true;
   }
+}
+
+function createRewardsGrid() {
+  elements.rewardsGrid.innerHTML = '';
+  
+  for (let level = 1; level <= 20; level++) {
+    const reward = PRESTIGE_CONFIG.rewards[level];
+    const isUnlocked = game.prestige.level >= level;
+    
+    const card = document.createElement('div');
+    card.className = `reward-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+    card.innerHTML = `
+      <div class="reward-level">${level}</div>
+      <div class="reward-icon"><i class="fas ${reward.icon}"></i></div>
+      <div class="reward-name">${reward.name}</div>
+      <div class="reward-desc">${reward.bonus}</div>
+    `;
+    
+    if (isUnlocked) {
+      card.style.borderColor = getEffectColor(reward.effect);
+      card.style.boxShadow = `0 0 15px ${getEffectColor(reward.effect)}`;
+    }
+    
+    elements.rewardsGrid.appendChild(card);
+  }
+}
+
+function performPrestige() {
+  if (game.prestige.level >= 20) return;
+  
+  const nextLevel = game.prestige.level + 1;
+  const requirement = PRESTIGE_CONFIG.requirements[nextLevel];
+  
+  if (game.credits >= requirement) {
+    // Рассчитываем очки престижа
+    const excess = game.credits - requirement;
+    const pointsEarned = Math.max(1, Math.floor(excess / (requirement * 0.1)));
+    
+    // Обновляем состояние
+    game.prestige.level = nextLevel;
+    game.prestige.points += pointsEarned;
+    game.prestige.nextRequirement = PRESTIGE_CONFIG.requirements[nextLevel + 1] || 0;
+    
+    // Сбрасываем прогресс с бонусами
+    resetAfterPrestige();
+    
+    // Визуальные эффекты
+    showPrestigeEffect(nextLevel);
+    elements.prestigeSound.play();
+    elements.levelupSound.play();
+    
+    // Уведомление
+    showUnlockNotification(`Достигнут уровень престижа ${nextLevel}!`);
+    
+    // Сохраняем и обновляем
+    saveGame();
+    updateGame();
+    createRewardsGrid();
+  }
+}
+
+function resetAfterPrestige() {
+  const bonusCredits = PRESTIGE_CONFIG.requirements[game.prestige.level] * 0.01;
+  
+  game.credits = bonusCredits;
+  game.droids = 0;
+  game.ships = 0;
+  game.jedi = 0;
+  game.deathStars = 0;
+}
+
+function getCurrentMultiplier() {
+  let multiplier = 1;
+  for (let level = 1; level <= game.prestige.level; level++) {
+    multiplier *= PRESTIGE_CONFIG.rewards[level].multiplier;
+  }
+  return multiplier;
+}
+
+function showPrestigeEffect(level) {
+  const effect = document.createElement('div');
+  effect.className = `prestige-effect level-${Math.min(level, 20)}`;
+  elements.prestigeEffects.appendChild(effect);
+  
+  setTimeout(() => {
+    effect.remove();
+  }, 3000);
+}
+
+function getEffectColor(effect) {
+  switch(effect) {
+    case 'gold': return '#FFD700';
+    case 'red': return '#FF0000';
+    case 'blue': return '#00B4FF';
+    case 'purple': return '#8A2BE2';
+    case 'dark': return '#4B0082';
+    case 'rainbow': return 'var(--yellow)';
+    case 'god': return 'var(--yellow)';
+    default: return 'var(--yellow)';
+  }
+}
+
+function showUnlockNotification(message) {
+  const notification = document.createElement('div');
+  notification.className = 'prestige-unlock';
+  notification.innerHTML = `
+    <div class="unlock-content">
+      <i class="fas fa-trophy"></i>
+      <h3>Новая разблокировка!</h3>
+      <p>${message}</p>
+    </div>
+  `;
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 5000);
+}
+
+function formatNumber(num) {
+  if (num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
+  if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+  if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+  if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+  return num.toString();
 }
 
 // Инициализация игры
 function initGame() {
-  // Показываем экран загрузки
-  elements.loadingScreen.style.display = 'flex';
-  
-  // Имитируем загрузку
+  // Загрузка ресурсов
   setTimeout(() => {
     elements.loadingScreen.style.display = 'none';
-    
     const savedFaction = localStorage.getItem('swFaction');
+    
     if (savedFaction) {
       loadGame();
     } else {
       elements.factionScreen.style.display = 'flex';
-      centerEmpireFaction();
+      // Центрируем скролл на Империи
+      const container = document.querySelector('.factions-container');
+      const empire = document.querySelector('.faction[data-faction="empire"]');
+      if (container && empire) {
+        container.scrollLeft = empire.offsetLeft - (container.offsetWidth / 2) + (empire.offsetWidth / 2);
+      }
     }
   }, 1500);
 
@@ -246,16 +470,19 @@ function initGame() {
     updateGame();
     saveGame();
     
+    // Анимация меча
     const sword = document.querySelector('.sword-blade');
     sword.style.transform = 'scaleY(0.95)';
     setTimeout(() => sword.style.transform = 'scaleY(1)', 100);
     
+    // Эффекты кликов
     for (let i = 0; i < 3; i++) {
       setTimeout(() => {
         createClickEffect(x, y, income / 3);
       }, i * 150);
     }
     
+    // Звук клика
     elements.clickSound.currentTime = 0;
     elements.clickSound.play();
   });
@@ -319,6 +546,9 @@ function initGame() {
       document.getElementById(button.dataset.tab).classList.add('active');
     });
   });
+
+  // Престиж система
+  elements.prestigeButton.addEventListener('click', performPrestige);
 
   // Пассивный доход
   setInterval(() => {
