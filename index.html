@@ -8,7 +8,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div id="faction-select" class="faction-screen">
+  <div id="loading-screen" class="loading-screen">
+    <div class="loader">
+      <div class="death-star">
+        <div class="laser"></div>
+      </div>
+      <p>Загрузка...</p>
+    </div>
+  </div>
+
+  <div id="faction-select" class="faction-screen hidden">
     <h1>Выберите фракцию</h1>
     <div class="factions-container">
       <div class="factions-scroll">
@@ -27,7 +36,7 @@
           <h2>Империя</h2>
           <div class="bonuses">
             <p><i class="fas fa-hand-fist"></i> +25% доход за клики</p>
-            <p><i class="fas fa-moon"></i> Звезды Смерти дешевле</p>
+            <p><i class="fas fa-moon"></i> Звезды Смерти дешевле на 20%</p>
           </div>
           <button class="select-faction">Выбрать</button>
         </div>
@@ -69,6 +78,7 @@
     </div>
 
     <div class="main-content">
+      <div id="passive-income-particles"></div>
       <button id="clickButton" class="click-button">
         <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/sword.png" alt="Меч" class="sword-blade">
         <div class="sword-glow"></div>
@@ -90,6 +100,7 @@
           <i class="fas fa-robot"></i>
           <span class="price">10</span>
           <span class="count" id="droidCount">0</span>
+          <div class="tooltip">Дроид<br>Пассивный доход: 0.1 кредита/сек</div>
         </button>
       </div>
       <div class="upgrade-item">
@@ -97,6 +108,7 @@
           <i class="fas fa-space-shuttle"></i>
           <span class="price">50</span>
           <span class="count" id="shipCount">0</span>
+          <div class="tooltip">Корабль<br>+0.5 к доходу за клик</div>
         </button>
       </div>
     </div>
@@ -107,6 +119,7 @@
           <i class="fas fa-jedi"></i>
           <span class="price">100</span>
           <span class="count" id="jediCount">0</span>
+          <div class="tooltip">Джедай<br>+2 к доходу за клик</div>
         </button>
       </div>
       <div class="upgrade-item">
@@ -114,10 +127,18 @@
           <i class="fas fa-moon"></i>
           <span class="price">1000</span>
           <span class="count" id="deathStarCount">0</span>
+          <div class="tooltip">Звезда Смерти<br>+5 к доходу за клик</div>
         </button>
       </div>
     </div>
+
+    <div id="offline-notification" class="offline-notification hidden">
+      <p>Вы заработали <span id="offline-earnings">0</span> кредитов, пока были оффлайн!</p>
+    </div>
   </div>
+
+  <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"></audio>
+  <audio id="buySound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"></audio>
 
   <script src="script.js"></script>
 </body>
