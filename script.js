@@ -55,8 +55,8 @@ function initFaction(faction) {
   elements.factionName.textContent = getFactionName(faction);
   localStorage.setItem('swFaction', faction);
   
-  elements.factionScreen.classList.add('hidden');
-  elements.gameContainer.classList.remove('hidden');
+  elements.factionScreen.style.display = 'none';
+  elements.gameContainer.style.display = 'flex';
 }
 
 function getFactionName(faction) {
@@ -74,7 +74,6 @@ function getPrice(type, count) {
   const growth = game.prices[type].growth;
   let price = basePrice * Math.pow(growth, count);
   
-  // Применяем бонусы фракций
   if (type === 'jedi' && game.faction === 'republic') price *= game.bonuses.republic.jediCost;
   if (type === 'deathStar' && game.faction === 'empire') price *= game.bonuses.empire.deathStarCost;
   if (type === 'ship' && game.faction === 'hutt') price *= game.bonuses.hutt.shipCost;
@@ -87,7 +86,7 @@ function calculateClickIncome() {
   let income = 1;
   income += game.ships * 0.5;
   income += game.jedi * 2;
-  income += game.deathStars * 5; // Уменьшили доход от Звезды Смерти с 10 до 5
+  income += game.deathStars * 5;
   
   if (game.faction === 'empire') income *= game.bonuses.empire.clickIncome;
   if (game.faction === 'hutt') income *= game.bonuses.hutt.baseIncome;
@@ -105,7 +104,7 @@ function calculatePassiveIncome() {
 // Создание частиц пассивного дохода
 function createParticles(amount) {
   const container = elements.passiveIncomeParticles;
-  const particleCount = Math.min(Math.floor(amount * 2), 20); // Ограничиваем количество частиц
+  const particleCount = Math.min(Math.floor(amount * 2), 20);
   
   for (let i = 0; i < particleCount; i++) {
     const particle = document.createElement('div');
@@ -117,7 +116,6 @@ function createParticles(amount) {
     particle.style.animationDuration = `${2 + Math.random() * 2}s`;
     container.appendChild(particle);
     
-    // Удаляем частицу после анимации
     setTimeout(() => {
       particle.remove();
     }, 3000);
@@ -164,21 +162,20 @@ function loadGame() {
     game.faction = data.faction || null;
     game.lastPlayed = data.lastPlayed || Date.now();
     
-    // Рассчитываем оффлайн-доход
     if (data.lastPlayed) {
       const offlineTime = Date.now() - data.lastPlayed;
-      const maxOfflineTime = 24 * 60 * 60 * 1000; // Максимум 24 часа
+      const maxOfflineTime = 24 * 60 * 60 * 1000;
       const effectiveTime = Math.min(offlineTime, maxOfflineTime);
       
-      if (effectiveTime > 5000) { // Показываем только если оффлайн > 5 секунд
+      if (effectiveTime > 5000) {
         const passiveIncome = calculatePassiveIncome();
         const offlineEarnings = passiveIncome * (effectiveTime / 1000);
         game.credits += offlineEarnings;
         
         elements.offlineEarnings.textContent = Math.floor(offlineEarnings);
-        elements.offlineNotification.classList.remove('hidden');
+        elements.offlineNotification.style.display = 'block';
         setTimeout(() => {
-          elements.offlineNotification.classList.add('hidden');
+          elements.offlineNotification.style.display = 'none';
         }, 5000);
       }
     }
@@ -201,33 +198,39 @@ function createClickEffect(x, y, amount) {
   setTimeout(() => effect.remove(), 1000);
 }
 
+// Центрирование фракции Империи
+function centerEmpireFaction() {
+  const container = document.querySelector('.factions-container');
+  const empire = document.querySelector('.faction[data-faction="empire"]');
+  if (container && empire) {
+    container.scrollLeft = empire.offsetLeft - (container.offsetWidth / 2) + (empire.offsetWidth / 2);
+  }
+}
+
 // Инициализация игры
 function initGame() {
-  // Загрузка ресурсов
+  // Показываем экран загрузки
+  elements.loadingScreen.style.display = 'flex';
+  
+  // Имитируем загрузку
   setTimeout(() => {
-    elements.loadingScreen.classList.add('hidden');
-    const savedFaction = localStorage.getItem('swFaction');
+    elements.loadingScreen.style.display = 'none';
     
+    const savedFaction = localStorage.getItem('swFaction');
     if (savedFaction) {
-      initFaction(savedFaction);
       loadGame();
     } else {
-      elements.factionScreen.classList.remove('hidden');
-      // Центрируем скролл на Империи
-      const container = document.querySelector('.factions-container');
-      const empire = document.querySelector('.faction[data-faction="empire"]');
-      if (container && empire) {
-        container.scrollLeft = empire.offsetLeft - (container.offsetWidth / 2) + (empire.offsetWidth / 2);
-      }
+      elements.factionScreen.style.display = 'flex';
+      centerEmpireFaction();
     }
-  }, 2000); // Имитация загрузки
+  }, 1500);
 
   // Обработчики выбора фракции
   document.querySelectorAll('.select-faction').forEach(button => {
     button.addEventListener('click', (e) => {
       const faction = e.target.closest('.faction').dataset.faction;
       initFaction(faction);
-      game.credits = 0; // Сброс при выборе новой фракции
+      game.credits = 0;
       saveGame();
     });
   });
@@ -243,19 +246,16 @@ function initGame() {
     updateGame();
     saveGame();
     
-    // Анимация меча
     const sword = document.querySelector('.sword-blade');
     sword.style.transform = 'scaleY(0.95)';
     setTimeout(() => sword.style.transform = 'scaleY(1)', 100);
     
-    // Эффекты кликов
     for (let i = 0; i < 3; i++) {
       setTimeout(() => {
         createClickEffect(x, y, income / 3);
       }, i * 150);
     }
     
-    // Звук клика
     elements.clickSound.currentTime = 0;
     elements.clickSound.play();
   });
