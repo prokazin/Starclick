@@ -186,6 +186,70 @@
     </div>
   </div>
 
+  <!-- Мультиплеер модальное окно -->
+  <div id="multiplayer-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2><i class="fas fa-users"></i> Мультиплеер</h2>
+      
+      <div class="multiplayer-tabs">
+        <button class="mp-tab active" data-tab="leaderboard">Рейтинг</button>
+        <button class="mp-tab" data-tab="friends">Друзья</button>
+      </div>
+      
+      <div id="leaderboard-content" class="mp-tab-content active">
+        <div class="leaderboard-filters">
+          <select id="leaderboard-filter">
+            <option value="all">Все игроки</option>
+            <option value="republic">Республика</option>
+            <option value="empire">Империя</option>
+            <option value="hutt">Хатты</option>
+          </select>
+          <select id="leaderboard-sort">
+            <option value="credits">По кредитам</option>
+            <option value="prestige">По престижу</option>
+            <option value="clickPower">По силе клика</option>
+          </select>
+        </div>
+        
+        <div id="leaderboard" class="leaderboard">
+          <!-- Заполнится через JS -->
+        </div>
+        
+        <div class="player-stats">
+          <h3>Ваша позиция</h3>
+          <div id="player-position">-</div>
+        </div>
+      </div>
+      
+      <div id="friends-content" class="mp-tab-content">
+        <div class="friends-search">
+          <input type="text" id="friend-search" placeholder="Найти игрока...">
+          <button id="search-friend"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <div id="search-results" class="search-results" style="display: none;">
+          <h4>Результаты поиска</h4>
+          <div id="found-players"></div>
+        </div>
+        
+        <div class="friends-list">
+          <h4>Ваши друзья</h4>
+          <div id="friends-container"></div>
+        </div>
+        
+        <div class="friend-requests">
+          <h4>Запросы в друзья <span id="requests-count">0</span></h4>
+          <div id="requests-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button id="multiplayer-button" class="multiplayer-button">
+    <i class="fas fa-users"></i>
+  </button>
+
   <div id="prestige-effects"></div>
 
   <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"></audio>
