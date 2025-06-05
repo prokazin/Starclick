@@ -642,153 +642,7 @@ body {
   color: #aaa;
 }
 
-/* Визуальные эффекты для престижа */
-.prestige-effect {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1000;
-  opacity: 0;
-  background: radial-gradient(circle, rgba(123, 31, 162, 0.8), rgba(74, 20, 140, 0));
-  animation: prestige-fade 3s forwards;
-}
-
-@keyframes prestige-fade {
-  0% { opacity: 0; transform: scale(0.5); }
-  20% { opacity: 1; transform: scale(1); }
-  80% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.5); }
-}
-
-/* Специальные стили для разных уровней престижа */
-.prestige-effect.level-5 {
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.8), rgba(218, 165, 32, 0));
-}
-
-.prestige-effect.level-10 {
-  background: radial-gradient(circle, rgba(255, 0, 0, 0.8), rgba(139, 0, 0, 0));
-}
-
-.prestige-effect.level-15 {
-  background: radial-gradient(circle, rgba(0, 255, 255, 0.8), rgba(0, 139, 139, 0));
-}
-
-.prestige-effect.level-20 {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(192, 192, 192, 0));
-  animation: prestige-final 4s forwards;
-}
-
-@keyframes prestige-final {
-  0% { opacity: 0; transform: scale(0.5); }
-  20% { opacity: 1; transform: scale(1); filter: brightness(1); }
-  50% { filter: brightness(3); }
-  80% { opacity: 1; transform: scale(1); filter: brightness(1); }
-  100% { opacity: 0; transform: scale(1.5); }
-}
-
-/* Мультиплеер и рейтинг */
-.multiplayer-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(to bottom, #4a148c, #7b1fa2);
-  color: white;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  z-index: 50;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s;
-}
-
-.multiplayer-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 15px rgba(123, 31, 162, 0.5);
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: rgba(30, 30, 30, 0.95);
-  border: 2px solid var(--yellow);
-  border-radius: 15px;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  padding: 20px;
-  overflow-y: auto;
-  position: relative;
-  color: white;
-}
-
-.close-modal {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--yellow);
-}
-
-.multiplayer-tabs {
-  display: flex;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #444;
-}
-
-.mp-tab {
-  padding: 10px 20px;
-  background: transparent;
-  border: none;
-  color: #aaa;
-  cursor: pointer;
-  font-size: 1rem;
-  position: relative;
-}
-
-.mp-tab.active {
-  color: var(--yellow);
-  font-weight: bold;
-}
-
-.mp-tab.active:after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--yellow);
-}
-
-.mp-tab-content {
-  display: none;
-}
-
-.mp-tab-content.active {
-  display: block;
-}
-
+/* Стили для рейтинговой таблицы */
 .leaderboard-filters {
   display: flex;
   gap: 10px;
@@ -804,11 +658,10 @@ body {
   border-radius: 5px;
 }
 
-.leaderboard {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
+.leaderboard-container {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 15px;
 }
 
 .leaderboard-item {
@@ -817,6 +670,7 @@ body {
   background: rgba(0, 0, 0, 0.5);
   padding: 10px;
   border-radius: 8px;
+  margin-bottom: 8px;
   transition: all 0.2s;
 }
 
@@ -901,159 +755,51 @@ body {
   font-weight: bold;
 }
 
-/* Друзья */
-.friends-search {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+/* Визуальные эффекты для престижа */
+.prestige-effect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(123, 31, 162, 0.8), rgba(74, 20, 140, 0));
+  animation: prestige-fade 3s forwards;
 }
 
-#friend-search {
-  flex: 1;
-  padding: 10px;
-  background: #222;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 5px;
+@keyframes prestige-fade {
+  0% { opacity: 0; transform: scale(0.5); }
+  20% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.5); }
 }
 
-#search-friend {
-  background: var(--yellow);
-  color: black;
-  border: none;
-  border-radius: 5px;
-  padding: 0 15px;
-  cursor: pointer;
+/* Специальные стили для разных уровней престижа */
+.prestige-effect.level-5 {
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.8), rgba(218, 165, 32, 0));
 }
 
-.search-results {
-  margin-bottom: 20px;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 15px;
-  border-radius: 10px;
+.prestige-effect.level-10 {
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.8), rgba(139, 0, 0, 0));
 }
 
-.search-results h4 {
-  margin-top: 0;
-  color: var(--yellow);
+.prestige-effect.level-15 {
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.8), rgba(0, 139, 139, 0));
 }
 
-.found-player {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #333;
+.prestige-effect.level-20 {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(192, 192, 192, 0));
+  animation: prestige-final 4s forwards;
 }
 
-.found-player:last-child {
-  border-bottom: none;
-}
-
-.found-player-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.found-player-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-.found-player-name {
-  font-weight: bold;
-}
-
-.found-player-faction {
-  font-size: 0.8rem;
-  color: #aaa;
-}
-
-.add-friend {
-  background: var(--yellow);
-  color: black;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-
-.friends-list, .friend-requests {
-  background: rgba(0, 0, 0, 0.5);
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-}
-
-.friends-list h4, .friend-requests h4 {
-  margin-top: 0;
-  color: var(--yellow);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.friend-item, .request-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #333;
-}
-
-.friend-item:last-child, .request-item:last-child {
-  border-bottom: none;
-}
-
-.friend-info, .request-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.friend-avatar, .request-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-.friend-name, .request-name {
-  font-weight: bold;
-}
-
-.friend-status {
-  font-size: 0.8rem;
-  color: #aaa;
-}
-
-.friend-actions, .request-actions {
-  display: flex;
-  gap: 5px;
-}
-
-.friend-action, .request-action {
-  background: #333;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-
-.friend-action.remove {
-  background: #ff3e3e;
-}
-
-.request-action.accept {
-  background: #4CAF50;
-}
-
-.request-action.decline {
-  background: #ff3e3e;
+@keyframes prestige-final {
+  0% { opacity: 0; transform: scale(0.5); }
+  20% { opacity: 1; transform: scale(1); filter: brightness(1); }
+  50% { filter: brightness(3); }
+  80% { opacity: 1; transform: scale(1); filter: brightness(1); }
+  100% { opacity: 0; transform: scale(1.5); }
 }
 
 /* Адаптивность */
@@ -1090,11 +836,6 @@ body {
   
   .rewards-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-  
-  .modal-content {
-    width: 95%;
-    padding: 15px;
   }
   
   .leaderboard-item {
