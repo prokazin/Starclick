@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Star Wars Clicker</title>
-  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="loading-screen" class="loading-screen">
@@ -74,6 +74,10 @@
           <i class="fas fa-space-shuttle"></i>
           <span id="ships">0</span>
         </div>
+        <div class="resource" title="Престиж">
+          <i class="fas fa-star"></i>
+          <span id="prestige-level-ui">0</span>
+        </div>
       </div>
     </div>
 
@@ -91,6 +95,9 @@
       </button>
       <button class="tab-button" data-tab="shop">
         <i class="fas fa-shopping-cart"></i>
+      </button>
+      <button class="tab-button" data-tab="prestige">
+        <i class="fas fa-star"></i>
       </button>
     </div>
 
@@ -132,13 +139,59 @@
       </div>
     </div>
 
+    <div id="prestige" class="tab-content">
+      <div class="prestige-header">
+        <h2><i class="fas fa-star"></i> Система Престижа</h2>
+        <div class="prestige-level">
+          Уровень: <span id="prestige-level">0</span>/20
+        </div>
+      </div>
+      
+      <div class="prestige-card">
+        <div class="prestige-progress">
+          <div class="progress-bar">
+            <div id="prestige-progress" class="progress-fill"></div>
+          </div>
+          <div class="progress-text">
+            До следующего уровня: <span id="prestige-remaining">1,000,000</span>
+          </div>
+        </div>
+        
+        <div class="prestige-stats">
+          <div class="stat">
+            <i class="fas fa-coins"></i>
+            <span id="prestige-points">0</span> очков престижа
+          </div>
+          <div class="stat">
+            <i class="fas fa-rocket"></i>
+            Множитель дохода: <span id="income-multiplier">1x</span>
+          </div>
+        </div>
+        
+        <button id="prestige-button" class="prestige-button" disabled>
+          <i class="fas fa-redo"></i> Активировать Престиж
+        </button>
+      </div>
+      
+      <div class="prestige-rewards">
+        <h3><i class="fas fa-trophy"></i> Награды за уровни</h3>
+        <div id="rewards-grid" class="rewards-grid">
+          <!-- Награды будут добавлены через JS -->
+        </div>
+      </div>
+    </div>
+
     <div id="offline-notification" class="offline-notification" style="display: none;">
       <p>Вы заработали <span id="offline-earnings">0</span> кредитов, пока были оффлайн!</p>
     </div>
   </div>
 
+  <div id="prestige-effects"></div>
+
   <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"></audio>
   <audio id="buySound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"></audio>
+  <audio id="prestige-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+  <audio id="levelup-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"></audio>
 
   <script src="script.js"></script>
 </body>
