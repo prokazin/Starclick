@@ -190,7 +190,7 @@ body {
   max-width: 500px;
   height: 90vh;
   margin: 0 auto;
-  display: none;
+  display: flex;
   flex-direction: column;
   background-color: var(--dark);
   border: 2px solid var(--yellow);
@@ -472,10 +472,6 @@ body {
 @keyframes slide-up {
   from { bottom: -50px; opacity: 0; }
   to { bottom: 20px; opacity: 1; }
-}
-
-.hidden {
-  display: none !important;
 }
 
 /* Адаптивность */
