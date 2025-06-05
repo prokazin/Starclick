@@ -474,12 +474,6 @@ body {
 }
 
 /* Стили для системы престижа */
-#prestige-tab {
-  display: none;
-  flex-direction: column;
-  gap: 20px;
-}
-
 .prestige-header {
   display: flex;
   justify-content: space-between;
@@ -695,6 +689,373 @@ body {
   100% { opacity: 0; transform: scale(1.5); }
 }
 
+/* Мультиплеер и рейтинг */
+.multiplayer-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, #4a148c, #7b1fa2);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.multiplayer-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(123, 31, 162, 0.5);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: rgba(30, 30, 30, 0.95);
+  border: 2px solid var(--yellow);
+  border-radius: 15px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  padding: 20px;
+  overflow-y: auto;
+  position: relative;
+  color: white;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--yellow);
+}
+
+.multiplayer-tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #444;
+}
+
+.mp-tab {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 1rem;
+  position: relative;
+}
+
+.mp-tab.active {
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.mp-tab.active:after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--yellow);
+}
+
+.mp-tab-content {
+  display: none;
+}
+
+.mp-tab-content.active {
+  display: block;
+}
+
+.leaderboard-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.leaderboard-filters select {
+  flex: 1;
+  padding: 8px;
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 5px;
+}
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.leaderboard-item:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.leaderboard-item.me {
+  background: rgba(255, 232, 31, 0.1);
+  border-left: 3px solid var(--yellow);
+}
+
+.leaderboard-position {
+  width: 30px;
+  text-align: center;
+  font-weight: bold;
+  color: var(--yellow);
+}
+
+.leaderboard-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 0 10px;
+  object-fit: cover;
+  border: 2px solid #444;
+}
+
+.leaderboard-info {
+  flex: 1;
+}
+
+.leaderboard-name {
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.leaderboard-faction {
+  font-size: 0.8rem;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.leaderboard-faction i {
+  color: var(--yellow);
+}
+
+.leaderboard-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.leaderboard-credits {
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.leaderboard-prestige {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.player-stats {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #444;
+}
+
+.player-stats h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--yellow);
+}
+
+#player-position {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Друзья */
+.friends-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+#friend-search {
+  flex: 1;
+  padding: 10px;
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 5px;
+}
+
+#search-friend {
+  background: var(--yellow);
+  color: black;
+  border: none;
+  border-radius: 5px;
+  padding: 0 15px;
+  cursor: pointer;
+}
+
+.search-results {
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.search-results h4 {
+  margin-top: 0;
+  color: var(--yellow);
+}
+
+.found-player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.found-player:last-child {
+  border-bottom: none;
+}
+
+.found-player-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.found-player-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.found-player-name {
+  font-weight: bold;
+}
+
+.found-player-faction {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.add-friend {
+  background: var(--yellow);
+  color: black;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.friends-list, .friend-requests {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.friends-list h4, .friend-requests h4 {
+  margin-top: 0;
+  color: var(--yellow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.friend-item, .request-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.friend-item:last-child, .request-item:last-child {
+  border-bottom: none;
+}
+
+.friend-info, .request-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.friend-avatar, .request-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.friend-name, .request-name {
+  font-weight: bold;
+}
+
+.friend-status {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.friend-actions, .request-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.friend-action, .request-action {
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.friend-action.remove {
+  background: #ff3e3e;
+}
+
+.request-action.accept {
+  background: #4CAF50;
+}
+
+.request-action.decline {
+  background: #ff3e3e;
+}
+
 /* Адаптивность */
 @media (max-width: 600px) {
   .factions-scroll {
@@ -729,5 +1090,20 @@ body {
   
   .rewards-grid {
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  
+  .modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+  
+  .leaderboard-item {
+    font-size: 0.9rem;
+  }
+  
+  .leaderboard-avatar {
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
   }
 }
