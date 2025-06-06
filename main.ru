@@ -1,38 +1,26 @@
-from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
+import os
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
-# ======== КОМАНДЫ БОТА ======== #
+# Конфигурация
+TOKEN = os.getenv("7574898043: AAH4945j Ih6A9jIEfgv6l
+RcBU34oITgTGps")  # Токен из переменных окружения (.env)
+GAME_URL = "https://starclick.vercel.app/"  # Ссылка на игру в Vercel
+
+# Обработчик команды /start
 def start(update: Update, context: CallbackContext):
-    # Кнопки внизу экрана (Reply-клавиатура)
-    reply_buttons = [["🎮 Играть", "📊 Статистика"], ["⚙️ Настройки"]]
-    
-    # Кнопки внутри сообщения (Inline-клавиатура)
-    inline_buttons = [
-        [InlineKeyboardButton("🔍 Поиск", callback_data="search")],
-        [InlineKeyboardButton("📌 Профиль", url="https://example.com")]
+    keyboard = [
+        [InlineKeyboardButton("🎮 Играть", url=GAME_URL)],
+        [InlineKeyboardButton("📊 Статистика", callback_data="stats")]
     ]
-    
     update.message.reply_text(
-        "Добро пожаловать в **StarclickkBot**!",
-        reply_markup=ReplyKeyboardMarkup(reply_buttons, resize_keyboard=True)
-    )
-    
-    update.message.reply_text(
-        "Выберите действие:",
-        reply_markup=InlineKeyboardMarkup(inline_buttons)
+        "Нажмите кнопку, чтобы начать игру:",
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
-def help(update: Update, context: CallbackContext):
-    update.message.reply_text("ℹ️ Это помощь по боту!")
-
-# ======== ЗАПУСК БОТА ======== #
-TOKEN = "7574898043: AAH4945j Ih6A9jIEfgv6l
-RcBU34oITgTGps"
-updater = Updater(TOKEN)
-
-# Регистрируем команды
-updater.dispatcher.add_handler(CommandHandler("start", start))
-updater.dispatcher.add_handler(CommandHandler("help", help))
-
-updater.start_polling()
-print("✅ Бот запущен!")  # Проверка работы
+# Запуск бота
+if __name__ == "__main__":
+    updater = Updater(TOKEN)
+    updater.dispatcher.add_handler(CommandHandler("start", start))
+    updater.start_polling()
+    print("🤖 Бот запущен! Для остановки Ctrl+C")
