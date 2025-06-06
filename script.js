@@ -1,3 +1,6 @@
+// Инициализация Telegram WebApp
+const tg = window.Telegram?.WebApp;
+
 // Конфигурация престижа
 const PRESTIGE_CONFIG = {
   requirements: [
@@ -126,9 +129,19 @@ function initFaction(faction) {
   elements.factionLogo.src = `https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/${faction}.png`;
   elements.factionName.textContent = getFactionName(faction);
   
-  // Генерируем случайное имя игрока
-  game.playerId = generatePlayerId();
-  game.playerName = `Игрок-${game.playerId.substring(0, 4)}`;
+  // Используем данные пользователя Telegram, если доступны
+  if (tg?.initDataUnsafe?.user) {
+    const user = tg.initDataUnsafe.user;
+    game.playerId = user.id.toString();
+    game.playerName = user.first_name || `Игрок-${user.id.toString().substring(0, 4)}`;
+    if (user.username) {
+      game.playerName = `@${user.username}`;
+    }
+  } else {
+    // Генерируем случайное имя игрока, если Telegram данные недоступны
+    game.playerId = generatePlayerId();
+    game.playerName = `Игрок-${game.playerId.substring(0, 4)}`;
+  }
   
   localStorage.setItem('swFaction', faction);
   localStorage.setItem('swPlayerId', game.playerId);
@@ -467,7 +480,7 @@ function initMultiplayer() {
       credits: game.credits,
       prestige: game.prestige.level,
       clickPower: calculateClickIncome(),
-      avatar: `https://i.pravatar.cc/150?u=${game.playerId}`
+      avatar: tg?.initDataUnsafe?.user?.photo_url || `https://i.pravatar.cc/150?u=${game.playerId}`
     },
     ...generateMockPlayers(19)
   ];
@@ -560,8 +573,32 @@ function getFactionIcon(faction) {
   }
 }
 
+// Функция для закрытия WebApp
+function closeWebApp() {
+  if (tg?.close) {
+    tg.close();
+  } else {
+    alert('Игра завершена. Вы можете закрыть вкладку.');
+  }
+}
+
+// Добавляем кнопку закрытия в интерфейс
+function addCloseButton() {
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'close-button';
+  closeBtn.textContent = 'Закрыть';
+  closeBtn.onclick = closeWebApp;
+  document.body.appendChild(closeBtn);
+}
+
 // Инициализация игры
 function initGame() {
+  // Инициализация Telegram WebApp
+  if (tg) {
+    tg.expand();
+    tg.enableClosingConfirmation();
+  }
+  
   // Загрузка ресурсов
   setTimeout(() => {
     elements.loadingScreen.style.display = 'none';
@@ -578,6 +615,9 @@ function initGame() {
         container.scrollLeft = empire.offsetLeft - (container.offsetWidth / 2) + (empire.offsetWidth / 2);
       }
     }
+    
+    // Добавляем кнопку закрытия для Telegram
+    addCloseButton();
   }, 1500);
 
   // Обработчики выбора фракции
