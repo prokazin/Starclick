@@ -473,7 +473,6 @@ body {
   to { bottom: 20px; opacity: 1; }
 }
 
-/* Стили для системы престижа */
 .prestige-header {
   display: flex;
   justify-content: space-between;
@@ -642,7 +641,6 @@ body {
   color: #aaa;
 }
 
-/* Стили для рейтинговой таблицы */
 .leaderboard-filters {
   display: flex;
   gap: 10px;
@@ -755,7 +753,6 @@ body {
   font-weight: bold;
 }
 
-/* Визуальные эффекты для престижа */
 .prestige-effect {
   position: fixed;
   top: 0;
@@ -776,7 +773,6 @@ body {
   100% { opacity: 0; transform: scale(1.5); }
 }
 
-/* Специальные стили для разных уровней престижа */
 .prestige-effect.level-5 {
   background: radial-gradient(circle, rgba(255, 215, 0, 0.8), rgba(218, 165, 32, 0));
 }
@@ -802,7 +798,59 @@ body {
   100% { opacity: 0; transform: scale(1.5); }
 }
 
-/* Адаптивность */
+.prestige-unlock {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid var(--yellow);
+  border-radius: 10px;
+  padding: 20px;
+  z-index: 1001;
+  animation: unlock-fade 5s forwards;
+}
+
+@keyframes unlock-fade {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+.unlock-content {
+  text-align: center;
+}
+
+.unlock-content i {
+  font-size: 3rem;
+  color: var(--yellow);
+  margin-bottom: 15px;
+}
+
+.unlock-content h3 {
+  color: var(--yellow);
+  margin-bottom: 10px;
+}
+
+.unlock-content p {
+  color: white;
+}
+
+.close-button {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 1000;
+  padding: 8px 16px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 @media (max-width: 600px) {
   .factions-scroll {
     justify-content: flex-start;
