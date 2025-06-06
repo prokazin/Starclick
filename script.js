@@ -1,6 +1,3 @@
-// Инициализация Telegram WebApp
-const tg = window.Telegram?.WebApp;
-
 // Конфигурация престижа
 const PRESTIGE_CONFIG = {
   requirements: [
@@ -60,8 +57,6 @@ const game = {
   deathStars: 0,
   faction: null,
   lastPlayed: Date.now(),
-  playerId: null,
-  playerName: null,
   prices: {
     droid: { base: 10, growth: 1.15 },
     ship: { base: 50, growth: 1.2 },
@@ -117,10 +112,450 @@ const elements = {
   prestigeEffects: document.getElementById('prestige-effects'),
   prestigeSound: document.getElementById('prestige-sound'),
   levelupSound: document.getElementById('levelup-sound'),
+  multiplayerButton: document.getElementById('multiplayer-button'),
+  multiplayerModal: document.getElementById('multiplayer-modal'),
+  closeModal: document.querySelector('.close-modal'),
+  leaderboard: document.getElementById('leaderboard'),
   leaderboardFilter: document.getElementById('leaderboard-filter'),
   leaderboardSort: document.getElementById('leaderboard-sort'),
-  leaderboardContainer: document.getElementById('leaderboard-container'),
-  playerPosition: document.getElementById('player-position')
+  playerPosition: document.getElementById('player-position'),
+  friendSearch: document.getElementById('friend-search'),
+  searchFriend: document.getElementById('search-friend'),
+  searchResults: document.getElementById('search-results'),
+  foundPlayers: document.getElementById('found-players'),
+  friendsContainer: document.getElementById('friends-container'),
+  requestsContainer: document.getElementById('requests-container'),
+  requestsCount: document.getElementById('requests-count')
+};
+
+// Мультиплеер и рейтинговая таблица
+const multiplayer = {
+  players: [],
+  friends: [],
+  requests: [],
+  playerId: null,
+  lastUpdate: 0,
+  updateInterval: 30000, // 30 секунд
+  
+  // Инициализация мультиплеера
+  init() {
+    // Генерируем уникальный ID игрока или получаем из localStorage
+    this.playerId = localStorage.getItem('swPlayerId') || this.generateId();
+    localStorage.setItem('swPlayerId', this.playerId);
+    
+    // Загружаем данные друзей и запросов
+    this.loadFriends();
+    this.loadRequests();
+    
+    // Обновляем данные игроков
+    this.updateLeaderboard();
+    
+    // Устанавливаем периодическое обновление
+    setInterval(() => this.updateLeaderboard(), this.updateInterval);
+    
+    // Обработчики для модального окна
+    elements.multiplayerButton.addEventListener('click', () => {
+      elements.multiplayerModal.style.display = 'flex';
+      this.updateLeaderboard();
+    });
+    
+    elements.closeModal.addEventListener('click', () => {
+      elements.multiplayerModal.style.display = 'none';
+    });
+    
+    // Обработчики вкладок
+    document.querySelectorAll('.mp-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.mp-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.mp-tab-content').forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab + '-content').classList.add('active');
+      });
+    });
+    
+    // Обработчики фильтров
+    elements.leaderboardFilter.addEventListener('change', () => this.updateLeaderboardUI());
+    elements.leaderboardSort.addEventListener('change', () => this.updateLeaderboardUI());
+    
+    // Обработчики друзей
+    elements.searchFriend.addEventListener('click', () => this.searchPlayers());
+    elements.friendSearch.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') this.searchPlayers();
+    });
+  },
+  
+  // Генерация ID игрока
+  generateId() {
+    return 'xxxx-xxxx-xxxx-xxxx'.replace(/[x]/g, () => 
+      (Math.random() * 16 | 0).toString(16)
+    );
+  },
+  
+  // Обновление данных рейтинга
+  async updateLeaderboard() {
+    try {
+      // Здесь должна быть реальная API-интеграция
+      // Для демо используем mock-данные
+      this.mockApiCall();
+      
+      // Обновляем UI
+      this.updateLeaderboardUI();
+      this.updatePlayerPosition();
+      
+      // Сохраняем время последнего обновления
+      this.lastUpdate = Date.now();
+    } catch (error) {
+      console.error('Ошибка обновления рейтинга:', error);
+    }
+  },
+  
+  // Mock API для демонстрации
+  mockApiCall() {
+    // Если игроков нет, создаем демо-данные
+    if (this.players.length === 0) {
+      const factions = ['republic', 'empire', 'hutt'];
+      const names = ['Skywalker', 'Vader', 'Solo', 'Kenobi', 'Fett', 'Organa', 'Windu', 'Maul', 'Dooku', 'Grievous'];
+      
+      for (let i = 0; i < 50; i++) {
+        const faction = factions[Math.floor(Math.random() * factions.length)];
+        this.players.push({
+          id: this.generateId(),
+          name: `${names[Math.floor(Math.random() * names.length)]}${Math.floor(Math.random() * 100)}`,
+          faction: faction,
+          credits: Math.floor(Math.random() * 1e10),
+          prestige: Math.floor(Math.random() * 15),
+          clickPower: Math.floor(Math.random() * 1000),
+          lastActive: Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000),
+          avatar: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`
+        });
+      }
+      
+      // Добавляем текущего игрока
+      const playerData = this.getPlayerData();
+      this.players.push(playerData);
+    } else {
+      // Обновляем демо-данные
+      this.players = this.players.map(player => {
+        if (player.id === this.playerId) {
+          return this.getPlayerData();
+        }
+        return {
+          ...player,
+          credits: player.credits + Math.floor(Math.random() * 1e6),
+          lastActive: Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)
+        };
+      });
+    }
+  },
+  
+  // Получение данных текущего игрока
+  getPlayerData() {
+    return {
+      id: this.playerId,
+      name: `Игрок${this.playerId.substring(0, 4)}`,
+      faction: game.faction,
+      credits: game.credits,
+      prestige: game.prestige.level,
+      clickPower: calculateClickIncome(),
+      lastActive: Date.now(),
+      avatar: `https://i.pravatar.cc/150?u=${this.playerId}`
+    };
+  },
+  
+  // Обновление UI рейтинга
+  updateLeaderboardUI() {
+    const filter = elements.leaderboardFilter.value;
+    const sortBy = elements.leaderboardSort.value;
+    
+    // Фильтрация
+    let filteredPlayers = [...this.players];
+    if (filter !== 'all') {
+      filteredPlayers = filteredPlayers.filter(p => p.faction === filter);
+    }
+    
+    // Сортировка
+    filteredPlayers.sort((a, b) => b[sortBy] - a[sortBy]);
+    
+    // Ограничение до топ-20
+    const topPlayers = filteredPlayers.slice(0, 20);
+    
+    // Обновление таблицы
+    elements.leaderboard.innerHTML = '';
+    
+    topPlayers.forEach((player, index) => {
+      const playerElement = document.createElement('div');
+      playerElement.className = `leaderboard-item ${player.id === this.playerId ? 'me' : ''}`;
+      playerElement.innerHTML = `
+        <div class="leaderboard-position">${index + 1}</div>
+        <img src="${player.avatar}" class="leaderboard-avatar" alt="${player.name}">
+        <div class="leaderboard-info">
+          <div class="leaderboard-name">${player.name}</div>
+          <div class="leaderboard-faction">
+            <i class="fas fa-${this.getFactionIcon(player.faction)}"></i>
+            ${this.getFactionName(player.faction)}
+          </div>
+        </div>
+        <div class="leaderboard-stats">
+          <div class="leaderboard-credits">${formatNumber(player.credits)}</div>
+          <div class="leaderboard-prestige">Ур. ${player.prestige}</div>
+        </div>
+      `;
+      elements.leaderboard.appendChild(playerElement);
+    });
+  },
+  
+  // Обновление позиции игрока
+  updatePlayerPosition() {
+    const sortBy = elements.leaderboardSort.value;
+    const allPlayers = [...this.players].sort((a, b) => b[sortBy] - a[sortBy]);
+    const playerIndex = allPlayers.findIndex(p => p.id === this.playerId);
+    
+    if (playerIndex >= 0) {
+      elements.playerPosition.textContent = `#${playerIndex + 1}`;
+    } else {
+      elements.playerPosition.textContent = 'Не в топе';
+    }
+  },
+  
+  // Поиск игроков
+  searchPlayers() {
+    const query = elements.friendSearch.value.trim().toLowerCase();
+    if (!query) return;
+    
+    const results = this.players
+      .filter(p => 
+        p.id !== this.playerId && 
+        !this.friends.some(f => f.id === p.id) &&
+        p.name.toLowerCase().includes(query)
+      )
+      .slice(0, 5);
+    
+    elements.foundPlayers.innerHTML = '';
+    
+    if (results.length === 0) {
+      elements.foundPlayers.innerHTML = '<p>Игроки не найдены</p>';
+    } else {
+      results.forEach(player => {
+        const playerElement = document.createElement('div');
+        playerElement.className = 'found-player';
+        playerElement.innerHTML = `
+          <div class="found-player-info">
+            <img src="${player.avatar}" class="found-player-avatar" alt="${player.name}">
+            <div>
+              <div class="found-player-name">${player.name}</div>
+              <div class="found-player-faction">${this.getFactionName(player.faction)}</div>
+            </div>
+          </div>
+          <button class="add-friend" data-id="${player.id}">Добавить</button>
+        `;
+        elements.foundPlayers.appendChild(playerElement);
+      });
+      
+      // Обработчики кнопок добавления
+      document.querySelectorAll('.add-friend').forEach(button => {
+        button.addEventListener('click', () => this.sendFriendRequest(button.dataset.id));
+      });
+    }
+    
+    elements.searchResults.style.display = 'block';
+  },
+  
+  // Отправка запроса в друзья
+  sendFriendRequest(playerId) {
+    // Здесь должна быть реальная API-интеграция
+    const targetPlayer = this.players.find(p => p.id === playerId);
+    if (!targetPlayer) return;
+    
+    // Добавляем в локальные запросы (в реальном приложении это делается через API)
+    this.requests.push({
+      id: `req-${Date.now()}`,
+      from: this.playerId,
+      to: playerId,
+      player: targetPlayer,
+      status: 'pending',
+      date: new Date()
+    });
+    
+    this.updateRequestsUI();
+    alert(`Запрос в друзья отправлен игроку ${targetPlayer.name}`);
+  },
+  
+  // Загрузка списка друзей
+  loadFriends() {
+    // Здесь должна быть реальная API-интеграция
+    // Для демо создаем mock-друзей
+    if (this.friends.length === 0) {
+      const potentialFriends = this.players
+        .filter(p => p.id !== this.playerId)
+        .slice(0, 5);
+      
+      this.friends = potentialFriends.map(p => ({
+        id: p.id,
+        player: p,
+        status: 'accepted',
+        date: new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000))
+      }));
+    }
+    
+    this.updateFriendsUI();
+  },
+  
+  // Загрузка запросов в друзья
+  loadRequests() {
+    // Здесь должна быть реальная API-интеграция
+    // Для демо создаем mock-запросы
+    if (this.requests.length === 0) {
+      const potentialRequests = this.players
+        .filter(p => p.id !== this.playerId)
+        .slice(5, 8);
+      
+      this.requests = potentialRequests.map(p => ({
+        id: `req-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        from: p.id,
+        to: this.playerId,
+        player: p,
+        status: 'pending',
+        date: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000))
+      }));
+    }
+    
+    this.updateRequestsUI();
+  },
+  
+  // Обновление UI списка друзей
+  updateFriendsUI() {
+    elements.friendsContainer.innerHTML = '';
+    
+    if (this.friends.length === 0) {
+      elements.friendsContainer.innerHTML = '<p>У вас пока нет друзей</p>';
+      return;
+    }
+    
+    // Сортируем по дате добавления (новые сверху)
+    const sortedFriends = [...this.friends].sort((a, b) => b.date - a.date);
+    
+    sortedFriends.forEach(friend => {
+      const friendElement = document.createElement('div');
+      friendElement.className = 'friend-item';
+      friendElement.innerHTML = `
+        <div class="friend-info">
+          <img src="${friend.player.avatar}" class="friend-avatar" alt="${friend.player.name}">
+          <div>
+            <div class="friend-name">${friend.player.name}</div>
+            <div class="friend-status">Друзья с ${friend.date.toLocaleDateString()}</div>
+          </div>
+        </div>
+        <div class="friend-actions">
+          <button class="friend-action remove" data-id="${friend.id}">Удалить</button>
+        </div>
+      `;
+      elements.friendsContainer.appendChild(friendElement);
+    });
+    
+    // Обработчики кнопок
+    document.querySelectorAll('.friend-action.remove').forEach(button => {
+      button.addEventListener('click', () => this.removeFriend(button.dataset.id));
+    });
+  },
+  
+  // Обновление UI запросов в друзья
+  updateRequestsUI() {
+    const incomingRequests = this.requests.filter(r => r.to === this.playerId && r.status === 'pending');
+    
+    elements.requestsCount.textContent = incomingRequests.length;
+    elements.requestsContainer.innerHTML = '';
+    
+    if (incomingRequests.length === 0) {
+      elements.requestsContainer.innerHTML = '<p>Нет новых запросов</p>';
+      return;
+    }
+    
+    // Сортируем по дате (новые сверху)
+    const sortedRequests = [...incomingRequests].sort((a, b) => b.date - a.date);
+    
+    sortedRequests.forEach(request => {
+      const requestElement = document.createElement('div');
+      requestElement.className = 'request-item';
+      requestElement.innerHTML = `
+        <div class="request-info">
+          <img src="${request.player.avatar}" class="request-avatar" alt="${request.player.name}">
+          <div>
+            <div class="request-name">${request.player.name}</div>
+            <div class="friend-status">${request.date.toLocaleDateString()}</div>
+          </div>
+        </div>
+        <div class="request-actions">
+          <button class="request-action accept" data-id="${request.id}">Принять</button>
+          <button class="request-action decline" data-id="${request.id}">Отклонить</button>
+        </div>
+      `;
+      elements.requestsContainer.appendChild(requestElement);
+    });
+    
+    // Обработчики кнопок
+    document.querySelectorAll('.request-action.accept').forEach(button => {
+      button.addEventListener('click', () => this.processRequest(button.dataset.id, 'accept'));
+    });
+    
+    document.querySelectorAll('.request-action.decline').forEach(button => {
+      button.addEventListener('click', () => this.processRequest(button.dataset.id, 'decline'));
+    });
+  },
+  
+  // Удаление друга
+  removeFriend(friendId) {
+    this.friends = this.friends.filter(f => f.id !== friendId);
+    this.updateFriendsUI();
+    alert('Друг удален');
+  },
+  
+  // Обработка запроса в друзья
+  processRequest(requestId, action) {
+    const request = this.requests.find(r => r.id === requestId);
+    if (!request) return;
+    
+    if (action === 'accept') {
+      // Добавляем в друзья
+      this.friends.push({
+        id: `fr-${Date.now()}`,
+        player: request.player,
+        status: 'accepted',
+        date: new Date()
+      });
+      
+      // Обновляем статус запроса
+      request.status = 'accepted';
+      
+      alert(`Теперь вы друзья с ${request.player.name}`);
+    } else {
+      // Отклоняем запрос
+      request.status = 'declined';
+      alert(`Запрос от ${request.player.name} отклонен`);
+    }
+    
+    this.updateFriendsUI();
+    this.updateRequestsUI();
+  },
+  
+  // Вспомогательные функции
+  getFactionName(faction) {
+    switch(faction) {
+      case 'republic': return 'Республика';
+      case 'empire': return 'Империя';
+      case 'hutt': return 'Хатты';
+      default: return 'Неизвестно';
+    }
+  },
+  
+  getFactionIcon(faction) {
+    switch(faction) {
+      case 'republic': return 'robot';
+      case 'empire': return 'hand-fist';
+      case 'hutt': return 'coins';
+      default: return 'question';
+    }
+  }
 };
 
 // Инициализация фракции
@@ -128,36 +563,13 @@ function initFaction(faction) {
   game.faction = faction;
   elements.factionLogo.src = `https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/${faction}.png`;
   elements.factionName.textContent = getFactionName(faction);
-  
-  // Используем данные пользователя Telegram, если доступны
-  if (tg?.initDataUnsafe?.user) {
-    const user = tg.initDataUnsafe.user;
-    game.playerId = user.id.toString();
-    game.playerName = user.first_name || `Игрок-${user.id.toString().substring(0, 4)}`;
-    if (user.username) {
-      game.playerName = `@${user.username}`;
-    }
-  } else {
-    // Генерируем случайное имя игрока, если Telegram данные недоступны
-    game.playerId = generatePlayerId();
-    game.playerName = `Игрок-${game.playerId.substring(0, 4)}`;
-  }
-  
   localStorage.setItem('swFaction', faction);
-  localStorage.setItem('swPlayerId', game.playerId);
-  localStorage.setItem('swPlayerName', game.playerName);
   
   elements.factionScreen.style.display = 'none';
   elements.gameContainer.style.display = 'flex';
   
-  // Инициализация мультиплеера
-  initMultiplayer();
-}
-
-function generatePlayerId() {
-  return 'xxxx-xxxx-xxxx-xxxx'.replace(/[x]/g, () => 
-    (Math.random() * 16 | 0).toString(16)
-  );
+  // Инициализация мультиплеера после выбора фракции
+  multiplayer.init();
 }
 
 function getFactionName(faction) {
@@ -260,9 +672,6 @@ function updateGame() {
   
   // Обновляем UI престижа
   updatePrestigeUI();
-  
-  // Обновляем рейтинг
-  updateLeaderboardUI();
 }
 
 // Сохранение игры
@@ -284,8 +693,6 @@ function loadGame() {
     game.faction = data.faction || null;
     game.lastPlayed = data.lastPlayed || Date.now();
     game.prestige = data.prestige || { level: 0, points: 0, nextRequirement: 1e6 };
-    game.playerId = localStorage.getItem('swPlayerId') || generatePlayerId();
-    game.playerName = localStorage.getItem('swPlayerName') || `Игрок-${game.playerId.substring(0, 4)}`;
     
     // Рассчитываем оффлайн-доход
     if (data.lastPlayed) {
@@ -469,136 +876,8 @@ function formatNumber(num) {
   return num.toString();
 }
 
-// Мультиплеер система
-function initMultiplayer() {
-  // Mock данные для демонстрации
-  game.players = [
-    {
-      id: game.playerId,
-      name: game.playerName,
-      faction: game.faction,
-      credits: game.credits,
-      prestige: game.prestige.level,
-      clickPower: calculateClickIncome(),
-      avatar: tg?.initDataUnsafe?.user?.photo_url || `https://i.pravatar.cc/150?u=${game.playerId}`
-    },
-    ...generateMockPlayers(19)
-  ];
-  
-  // Обработчики фильтров
-  elements.leaderboardFilter.addEventListener('change', updateLeaderboardUI);
-  elements.leaderboardSort.addEventListener('change', updateLeaderboardUI);
-  
-  // Первоначальное обновление
-  updateLeaderboardUI();
-}
-
-function generateMockPlayers(count) {
-  const factions = ['republic', 'empire', 'hutt'];
-  const names = ['Skywalker', 'Vader', 'Solo', 'Kenobi', 'Fett', 'Organa', 'Windu', 'Maul', 'Dooku', 'Grievous'];
-  
-  return Array.from({ length: count }, (_, i) => ({
-    id: `mock-${i}`,
-    name: `${names[i % names.length]}${Math.floor(Math.random() * 100)}`,
-    faction: factions[Math.floor(Math.random() * factions.length)],
-    credits: Math.floor(Math.random() * 1e10),
-    prestige: Math.floor(Math.random() * 15),
-    clickPower: Math.floor(Math.random() * 1000),
-    avatar: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`
-  }));
-}
-
-function updateLeaderboardUI() {
-  const filter = elements.leaderboardFilter.value;
-  const sortBy = elements.leaderboardSort.value;
-  
-  // Фильтрация
-  let filteredPlayers = [...game.players];
-  if (filter !== 'all') {
-    filteredPlayers = filteredPlayers.filter(p => p.faction === filter);
-  }
-  
-  // Сортировка
-  filteredPlayers.sort((a, b) => b[sortBy] - a[sortBy]);
-  
-  // Ограничение до топ-20
-  const topPlayers = filteredPlayers.slice(0, 20);
-  
-  // Обновление таблицы
-  elements.leaderboardContainer.innerHTML = '';
-  
-  topPlayers.forEach((player, index) => {
-    const playerElement = document.createElement('div');
-    playerElement.className = `leaderboard-item ${player.id === game.playerId ? 'me' : ''}`;
-    playerElement.innerHTML = `
-      <div class="leaderboard-position">${index + 1}</div>
-      <img src="${player.avatar}" class="leaderboard-avatar" alt="${player.name}">
-      <div class="leaderboard-info">
-        <div class="leaderboard-name">${player.name}</div>
-        <div class="leaderboard-faction">
-          <i class="fas fa-${getFactionIcon(player.faction)}"></i>
-          ${getFactionName(player.faction)}
-        </div>
-      </div>
-      <div class="leaderboard-stats">
-        <div class="leaderboard-credits">${formatNumber(player.credits)}</div>
-        <div class="leaderboard-prestige">Ур. ${player.prestige}</div>
-      </div>
-    `;
-    elements.leaderboardContainer.appendChild(playerElement);
-  });
-  
-  // Обновление позиции игрока
-  updatePlayerPosition();
-}
-
-function updatePlayerPosition() {
-  const sortBy = elements.leaderboardSort.value;
-  const allPlayers = [...game.players].sort((a, b) => b[sortBy] - a[sortBy]);
-  const playerIndex = allPlayers.findIndex(p => p.id === game.playerId);
-  
-  if (playerIndex >= 0) {
-    elements.playerPosition.textContent = `#${playerIndex + 1}`;
-  } else {
-    elements.playerPosition.textContent = 'Не в топе';
-  }
-}
-
-function getFactionIcon(faction) {
-  switch(faction) {
-    case 'republic': return 'robot';
-    case 'empire': return 'hand-fist';
-    case 'hutt': return 'coins';
-    default: return 'question';
-  }
-}
-
-// Функция для закрытия WebApp
-function closeWebApp() {
-  if (tg?.close) {
-    tg.close();
-  } else {
-    alert('Игра завершена. Вы можете закрыть вкладку.');
-  }
-}
-
-// Добавляем кнопку закрытия в интерфейс
-function addCloseButton() {
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'close-button';
-  closeBtn.textContent = 'Закрыть';
-  closeBtn.onclick = closeWebApp;
-  document.body.appendChild(closeBtn);
-}
-
 // Инициализация игры
 function initGame() {
-  // Инициализация Telegram WebApp
-  if (tg) {
-    tg.expand();
-    tg.enableClosingConfirmation();
-  }
-  
   // Загрузка ресурсов
   setTimeout(() => {
     elements.loadingScreen.style.display = 'none';
@@ -615,9 +894,6 @@ function initGame() {
         container.scrollLeft = empire.offsetLeft - (container.offsetWidth / 2) + (empire.offsetWidth / 2);
       }
     }
-    
-    // Добавляем кнопку закрытия для Telegram
-    addCloseButton();
   }, 1500);
 
   // Обработчики выбора фракции
@@ -715,10 +991,6 @@ function initGame() {
       
       button.classList.add('active');
       document.getElementById(button.dataset.tab).classList.add('active');
-      
-      if (button.dataset.tab === 'leaderboard') {
-        updateLeaderboardUI();
-      }
     });
   });
 
