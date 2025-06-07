@@ -1097,6 +1097,3 @@ window.addEventListener('DOMContentLoaded', () => {
     initGame();
   }, 1500);
 });
-
-// Запуск игры
-window.addEventListener('DOMContentLoaded', initGame);
