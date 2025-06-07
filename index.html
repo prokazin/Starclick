@@ -2,10 +2,11 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Star Wars Clicker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Star Wars Clicker (Telegram)</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
   <div id="loading-screen" class="loading-screen">
@@ -17,245 +18,31 @@
     </div>
   </div>
 
-  <div id="faction-select" class="faction-screen" style="display: none;">
-    <h1>Выберите фракцию</h1>
-    <div class="factions-container">
-      <div class="factions-scroll">
-        <div class="faction" data-faction="republic">
-          <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/republic.png" alt="Республика">
-          <h2>Республика</h2>
-          <div class="bonuses">
-            <p><i class="fas fa-robot"></i> +20% доход от дроидов</p>
-            <p><i class="fas fa-jedi"></i> Джедаи дешевле на 15%</p>
-          </div>
-          <button class="select-faction">Выбрать</button>
-        </div>
-        
-        <div class="faction" data-faction="empire">
-          <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/empire.png" alt="Империя">
-          <h2>Империя</h2>
-          <div class="bonuses">
-            <p><i class="fas fa-hand-fist"></i> +25% доход за клики</p>
-            <p><i class="fas fa-moon"></i> Звезды Смерти дешевле на 20%</p>
-          </div>
-          <button class="select-faction">Выбрать</button>
-        </div>
-        
-        <div class="faction" data-faction="hutt">
-          <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/hutt.png" alt="Хатты">
-          <h2>Хатты</h2>
-          <div class="bonuses">
-            <p><i class="fas fa-coins"></i> +30% к базовому доходу</p>
-            <p><i class="fas fa-ship"></i> Корабли дешевле на 20%</p>
-          </div>
-          <button class="select-faction">Выбрать</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="game-container" class="container" style="display: none;">
-    <div class="faction-banner">
-      <img id="faction-logo" src="" alt="Фракция">
-      <span id="faction-name"></span>
-    </div>
-    
+  <div id="game-container" class="container">
     <div class="header">
       <div class="resources">
         <div class="resource" title="Кредиты">
           <i class="fas fa-coins"></i>
           <span id="credits">0</span>
         </div>
-        <div class="resource" title="Дроиды">
-          <i class="fas fa-robot"></i>
-          <span id="droids">0</span>
-        </div>
-        <div class="resource" title="Корабли">
-          <i class="fas fa-space-shuttle"></i>
-          <span id="ships">0</span>
-        </div>
-        <div class="resource" title="Престиж">
-          <i class="fas fa-star"></i>
-          <span id="prestige-level-ui">0</span>
+        <div class="resource" title="Уровень">
+          <i class="fas fa-level-up-alt"></i>
+          <span id="level">1</span>
         </div>
       </div>
     </div>
 
     <div class="main-content">
-      <div id="passive-income-particles"></div>
       <button id="clickButton" class="click-button">
         <img src="https://raw.githubusercontent.com/prokazin/Starclick/main/assets/images/sword.png" alt="Меч" class="sword-blade">
-        <div class="sword-glow"></div>
       </button>
     </div>
 
-    <div class="tabs">
-      <button class="tab-button active" data-tab="upgrades">
-        <i class="fas fa-cog"></i>
-      </button>
-      <button class="tab-button" data-tab="shop">
-        <i class="fas fa-shopping-cart"></i>
-      </button>
-      <button class="tab-button" data-tab="prestige">
-        <i class="fas fa-star"></i>
-      </button>
-    </div>
-
-    <div id="upgrades" class="tab-content active">
-      <div class="upgrade-item">
-        <button id="buyDroid" class="upgrade-button">
-          <i class="fas fa-robot"></i>
-          <span class="price">10</span>
-          <span class="count" id="droidCount">0</span>
-          <div class="tooltip">Дроид<br>Пассивный доход: 0.1 кредита/сек</div>
-        </button>
-      </div>
-      <div class="upgrade-item">
-        <button id="buyShip" class="upgrade-button">
-          <i class="fas fa-space-shuttle"></i>
-          <span class="price">50</span>
-          <span class="count" id="shipCount">0</span>
-          <div class="tooltip">Корабль<br>+0.5 к доходу за клик</div>
-        </button>
-      </div>
-    </div>
-
-    <div id="shop" class="tab-content">
-      <div class="upgrade-item">
-        <button id="buyJedi" class="upgrade-button">
-          <i class="fas fa-jedi"></i>
-          <span class="price">100</span>
-          <span class="count" id="jediCount">0</span>
-          <div class="tooltip">Джедай<br>+2 к доходу за клик</div>
-        </button>
-      </div>
-      <div class="upgrade-item">
-        <button id="buyDeathStar" class="upgrade-button">
-          <i class="fas fa-moon"></i>
-          <span class="price">1000</span>
-          <span class="count" id="deathStarCount">0</span>
-          <div class="tooltip">Звезда Смерти<br>+5 к доходу за клик</div>
-        </button>
-      </div>
-    </div>
-
-    <div id="prestige" class="tab-content">
-      <div class="prestige-header">
-        <h2><i class="fas fa-star"></i> Система Престижа</h2>
-        <div class="prestige-level">
-          Уровень: <span id="prestige-level">0</span>/20
-        </div>
-      </div>
-      
-      <div class="prestige-card">
-        <div class="prestige-progress">
-          <div class="progress-bar">
-            <div id="prestige-progress" class="progress-fill"></div>
-          </div>
-          <div class="progress-text">
-            До следующего уровня: <span id="prestige-remaining">1,000,000</span>
-          </div>
-        </div>
-        
-        <div class="prestige-stats">
-          <div class="stat">
-            <i class="fas fa-coins"></i>
-            <span id="prestige-points">0</span> очков престижа
-          </div>
-          <div class="stat">
-            <i class="fas fa-rocket"></i>
-            Множитель дохода: <span id="income-multiplier">1x</span>
-          </div>
-        </div>
-        
-        <button id="prestige-button" class="prestige-button" disabled>
-          <i class="fas fa-redo"></i> Активировать Престиж
-        </button>
-      </div>
-      
-      <div class="prestige-rewards">
-        <h3><i class="fas fa-trophy"></i> Награды за уровни</h3>
-        <div id="rewards-grid" class="rewards-grid">
-          <!-- Награды будут добавлены через JS -->
-        </div>
-      </div>
-    </div>
-
-    <div id="offline-notification" class="offline-notification" style="display: none;">
-      <p>Вы заработали <span id="offline-earnings">0</span> кредитов, пока были оффлайн!</p>
+    <div id="telegram-info" class="telegram-info">
+      <p>ID: <span id="tg-user-id">Неизвестно</span></p>
+      <button id="reward-button" class="reward-button">Получить награду</button>
     </div>
   </div>
-
-  <!-- Мультиплеер модальное окно -->
-  <div id="multiplayer-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2><i class="fas fa-users"></i> Мультиплеер</h2>
-      
-      <div class="multiplayer-tabs">
-        <button class="mp-tab active" data-tab="leaderboard">Рейтинг</button>
-        <button class="mp-tab" data-tab="friends">Друзья</button>
-      </div>
-      
-      <div id="leaderboard-content" class="mp-tab-content active">
-        <div class="leaderboard-filters">
-          <select id="leaderboard-filter">
-            <option value="all">Все игроки</option>
-            <option value="republic">Республика</option>
-            <option value="empire">Империя</option>
-            <option value="hutt">Хатты</option>
-          </select>
-          <select id="leaderboard-sort">
-            <option value="credits">По кредитам</option>
-            <option value="prestige">По престижу</option>
-            <option value="clickPower">По силе клика</option>
-          </select>
-        </div>
-        
-        <div id="leaderboard" class="leaderboard">
-          <!-- Заполнится через JS -->
-        </div>
-        
-        <div class="player-stats">
-          <h3>Ваша позиция</h3>
-          <div id="player-position">-</div>
-        </div>
-      </div>
-      
-      <div id="friends-content" class="mp-tab-content">
-        <div class="friends-search">
-          <input type="text" id="friend-search" placeholder="Найти игрока...">
-          <button id="search-friend"><i class="fas fa-search"></i></button>
-        </div>
-        
-        <div id="search-results" class="search-results" style="display: none;">
-          <h4>Результаты поиска</h4>
-          <div id="found-players"></div>
-        </div>
-        
-        <div class="friends-list">
-          <h4>Ваши друзья</h4>
-          <div id="friends-container"></div>
-        </div>
-        
-        <div class="friend-requests">
-          <h4>Запросы в друзья <span id="requests-count">0</span></h4>
-          <div id="requests-container"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <button id="multiplayer-button" class="multiplayer-button">
-    <i class="fas fa-users"></i>
-  </button>
-
-  <div id="prestige-effects"></div>
-
-  <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"></audio>
-  <audio id="buySound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"></audio>
-  <audio id="prestige-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
-  <audio id="levelup-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"></audio>
 
   <script src="script.js"></script>
 </body>
